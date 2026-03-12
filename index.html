@@ -3,38 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Studio Pro V24</title>
+    <title>Studio Pro V25</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         :root { --bg: #050505; --card: #111113; --accent: #d2fe00; --text: #ffffff; --muted: #8e8e93; --border: #1c1c1e; --danger: #ff3b30; --success: #34c759; }
         * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 110px; overflow-x: hidden; }
+        body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 110px; }
         
-        /* Header Logout Style */
-        .top-nav { display: flex; justify-content: center; padding: 15px; position: sticky; top: 0; z-index: 9000; background: linear-gradient(to bottom, var(--bg), transparent); }
-        .exit-btn { background: var(--danger); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 800; font-size: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 59, 48, 0.2); }
+        .top-nav { display: flex; justify-content: center; padding: 15px; position: sticky; top: 0; z-index: 9000; background: var(--bg); border-bottom: 1px solid var(--border); }
+        .exit-btn { background: var(--danger); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 800; font-size: 11px; cursor: pointer; }
 
-        .container { max-width: 600px; margin: 0 auto; padding: 0 20px 20px; display: none; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; display: none; }
         .card { background: var(--card); border-radius: 24px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); }
         .btn { width: 100%; padding: 16px; border-radius: 16px; border: none; background: var(--accent); color: black; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
         input, select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--border); background: #1a1a1c; color: white; margin-bottom: 10px; outline: none; }
         
-        .lang-switch { position: fixed; top: 15px; right: 15px; z-index: 10001; background: var(--accent); color: black; padding: 6px 12px; border-radius: 10px; font-weight: 800; cursor: pointer; border: none; font-size: 11px; }
-        
+        .lang-switch { position: fixed; top: 15px; right: 15px; z-index: 10001; background: var(--accent); color: black; padding: 8px 12px; border-radius: 10px; font-weight: 800; cursor: pointer; border: none; font-size: 11px; }
         .nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10,10,12,0.95); backdrop-filter: blur(20px); display: none; justify-content: space-around; padding: 15px 0 35px; border-top: 1px solid var(--border); z-index: 5000; }
         .nav-item { color: var(--muted); font-size: 10px; text-align: center; flex: 1; cursor: pointer; font-weight: 600; }
         .nav-item.active { color: var(--accent); }
-        
-        /* Calendar Styles */
-        .date-header { text-align: center; font-weight: 800; color: var(--accent); margin-bottom: 15px; font-size: 14px; letter-spacing: 1px; }
+
         .cal-grid { display: grid; grid-template-columns: 80px 1fr; gap: 8px; }
         .cal-slot { padding: 12px; border-radius: 10px; background: #1a1a1c; font-size: 13px; text-align: center; cursor: pointer; }
         .slot-free { color: var(--success); } .slot-busy { color: var(--danger); font-weight: 800; }
-        
         #admin-reader { width: 100%; border-radius: 20px; overflow: hidden; display: none; margin-top: 15px; border: 2px solid var(--accent); }
-        .eye-btn { position: absolute; right: 15px; top: 12px; cursor: pointer; }
     </style>
 </head>
 <body onload="app.init()">
@@ -42,7 +36,6 @@
 <button class="lang-switch" onclick="ui.toggleLang()" id="langBtn">EN</button>
 
 <div id="auth-selection" style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px;">
-    <div style="font-size: 40px; margin-bottom: 10px;">⚡</div>
     <h1 id="txt-welcome">STUDIO PRO</h1>
     <button class="btn" onclick="ui.showGate('admin')" id="txt-btn-admin">👑 Yönetici Paneli</button>
     <button class="btn" style="background:var(--card); color:white; border:1px solid var(--border)" onclick="ui.showGate('member')" id="txt-btn-member">👤 Üye Girişi</button>
@@ -51,27 +44,32 @@
 <div id="gate-page" style="position:fixed; inset:0; background:var(--bg); z-index:10000; display:none; flex-direction:column; align-items:center; justify-content:center; padding:20px;">
     <div class="card" style="max-width:380px; width:100%;">
         <h3 id="txt-gate-title">Giriş Yap</h3>
-        <div style="position:relative">
-            <input type="password" id="gate-input" placeholder="Şifre / Telefon">
-            <span class="eye-btn" onclick="ui.togglePass()">👁️</span>
-        </div>
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px; font-size:13px; color:var(--muted)">
-            <input type="checkbox" id="rememberMe" style="width:18px; height:18px; margin:0"> <span id="txt-remember">Beni Hatırla</span>
-        </div>
+        <input type="password" id="gate-input" placeholder="Şifre / Telefon">
+        <label style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); margin-bottom:15px;">
+            <input type="checkbox" id="rememberMe" style="width:16px;"> <span id="txt-remember">Beni Hatırla</span>
+        </label>
         <button class="btn" onclick="app.processLogin()" id="txt-btn-login">Giriş Yap</button>
-        <button onclick="ui.back()" style="background:none; border:none; color:var(--muted); margin-top:15px; width:100%; cursor:pointer;" id="txt-btn-back">Geri Dön</button>
+        <button onclick="ui.back()" style="background:none; border:none; color:var(--muted); margin-top:10px; width:100%; cursor:pointer;" id="txt-btn-back">Geri Dön</button>
     </div>
 </div>
 
-<div id="admin-panel">
-    <div class="top-nav"><button class="exit-btn" onclick="app.logout()" id="txt-logout-1">ÇIKIŞ / LOGOUT</button></div>
+<div id="admin-panel" style="display:none;">
+    <div class="top-nav"><button class="exit-btn" onclick="app.logout()">ÇIKIŞ / LOGOUT</button></div>
     <div class="container" style="display:block;">
         <h2 id="txt-admin-title">Yönetim</h2>
 
-        <div class="card" style="border: 1px solid var(--accent)">
-            <h4 id="txt-admin-scan">Seans Düş (QR Okut)</h4>
+        <div class="card" style="border:1px solid var(--accent)">
+            <h4 id="txt-admin-scan">QR Seans Düş</h4>
             <div id="admin-reader"></div>
-            <button class="btn" onclick="app.startAdminScanner()" id="txt-btn-cam">📷 Kamerayı Aç</button>
+            <button class="btn" onclick="app.startAdminScanner()">📷 Kamerayı Aç</button>
+        </div>
+
+        <div class="card">
+            <h4 id="txt-studio-info">İletişim & Senkronizasyon</h4>
+            <input type="text" id="conf-wp" placeholder="WhatsApp (905...)">
+            <input type="text" id="conf-ig" placeholder="Instagram Adı">
+            <input type="text" id="conf-tel" placeholder="Telefon">
+            <button class="btn" style="background:var(--success)" onclick="app.saveConfig()" id="txt-save-conf">Bilgileri Güncelle</button>
         </div>
 
         <div class="card">
@@ -86,14 +84,14 @@
 
         <div class="card">
             <h3 id="txt-cal-manage">Programı Yönet</h3>
-            <div class="date-header" id="admin-date-display"></div>
+            <input type="date" id="admin-date-picker" onchange="app.renderSchedule()">
             <div id="admin-cal-grid" class="cal-grid"></div>
         </div>
     </div>
 </div>
 
-<div id="member-panel">
-    <div class="top-nav"><button class="exit-btn" onclick="app.logout()" id="txt-logout-2">ÇIKIŞ / LOGOUT</button></div>
+<div id="member-panel" style="display:none;">
+    <div class="top-nav"><button class="exit-btn" onclick="app.logout()">ÇIKIŞ / LOGOUT</button></div>
     <div class="container" style="display:block;">
         <div id="tab-home" class="tab-content active">
             <div class="card" style="text-align:center;">
@@ -102,16 +100,21 @@
                 <p id="txt-rem-sess" style="color:var(--muted); font-size:12px;">KALAN SEANS</p>
             </div>
             
-            <div class="card" style="border-left: 4px solid var(--accent);">
-                <h4 id="txt-rules-title" style="margin:0 0 10px 0">Stüdyo Kuralları</h4>
-                <div id="rules-content" style="font-size:13px; color:var(--muted); line-height:1.6;"></div>
+            <div class="card">
+                <h4 id="txt-rules-title">Stüdyo Kuralları</h4>
+                <p id="rules-content" style="font-size:13px; color:var(--muted);"></p>
+            </div>
+
+            <div class="card">
+                <h4 id="txt-contact-studio">Bize Ulaşın</h4>
+                <div id="u-contact-area" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
             </div>
         </div>
 
-        <div id="tab-cal" class="tab-content">
-            <h3 id="txt-nav-cal">Müsaitlik Durumu</h3>
+        <div id="tab-cal" class="tab-content" style="display:none;">
+            <h3 id="txt-nav-cal">Müsaitlik Bak</h3>
             <div class="card">
-                <div class="date-header" id="user-date-display"></div>
+                <input type="date" id="user-date-picker" onchange="app.renderSchedule()">
                 <div id="user-cal-grid" class="cal-grid"></div>
             </div>
         </div>
@@ -127,68 +130,56 @@
 const langData = {
     tr: {
         welcome: "STUDIO PRO", btnAdmin: "👑 Yönetici Paneli", btnMember: "👤 Üye Girişi",
-        gateTitle: "Giriş Yap", btnLogin: "Giriş Yap", btnBack: "Geri Dön", remember: "Beni Hatırla",
-        adminTitle: "İşletme Yönetimi", adminScan: "Seans Düş (QR Okut)", btnCam: "📷 Kamerayı Aç",
-        addMember: "Üye Ekle", save: "Kaydet", remSess: "KALAN SEANS", rulesTitle: "Stüdyo Kuralları",
-        calManage: "Programı Yönet", navHome: "Panel", navCal: "Takvim", free: "MÜSAİT", busy: "DOLU"
+        gateTitle: "Giriş", btnLogin: "Giriş", btnBack: "Geri", remember: "Beni Hatırla",
+        adminTitle: "İşletme Yönetimi", adminScan: "QR Seans Düş", studioInfo: "İletişim Bilgileri",
+        saveConf: "Güncelle", addMember: "Üye Ekle", save: "Kaydet", remSess: "KALAN SEANS",
+        rulesTitle: "Stüdyo Kuralları", contactStudio: "Bize Ulaşın", calManage: "Program Yönetimi",
+        navHome: "Panel", navCal: "Takvim", free: "MÜSAİT", busy: "DOLU",
+        rules: "• İptaller 6 saat önceden.<br>• Paket süresi 30 gün.<br>• Temiz ayakkabı zorunludur."
     },
     en: {
         welcome: "STUDIO PRO", btnAdmin: "👑 Admin Panel", btnMember: "👤 Member Login",
         gateTitle: "Login", btnLogin: "Login", btnBack: "Back", remember: "Remember Me",
-        adminTitle: "Management", adminScan: "Drop Session (QR)", btnCam: "📷 Open Camera",
-        addMember: "Add Member", save: "Save", remSess: "REMAINING SESSIONS", rulesTitle: "Studio Rules",
-        calManage: "Manage Schedule", navHome: "Home", navCal: "Schedule", free: "FREE", busy: "BUSY"
+        adminTitle: "Management", adminScan: "QR Session", studioInfo: "Contact Info",
+        saveConf: "Update", addMember: "Add Member", save: "Save", remSess: "REMAINING",
+        rulesTitle: "Studio Rules", contactStudio: "Contact Us", calManage: "Schedule Management",
+        navHome: "Home", navCal: "Schedule", free: "FREE", busy: "BUSY",
+        rules: "• 6h cancellation policy.<br>• 30-day package limit.<br>• Clean shoes mandatory."
     }
 };
 
 const app = {
-    db: JSON.parse(localStorage.getItem('studio_v24')) || { members: [], schedule: {} },
+    db: JSON.parse(localStorage.getItem('studio_v25')) || { members: [], config: { wp: "", ig: "", tel: "" }, schedule: {} },
     user: null,
 
-    init() { 
-        ui.updateTexts(); 
+    init() {
+        ui.updateTexts();
+        // Tarih seçicileri bugüne ayarla
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('admin-date-picker').value = today;
+        document.getElementById('user-date-picker').value = today;
         this.checkRemember();
-        this.updateDateDisplay();
-        this.renderSchedule();
-        // Hide panels by default
-        document.getElementById('admin-panel').style.display = 'none';
-        document.getElementById('member-panel').style.display = 'none';
-    },
-
-    updateDateDisplay() {
-        const now = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const dateStr = now.toLocaleDateString(ui.lang === 'tr' ? 'tr-TR' : 'en-US', options);
-        document.getElementById('admin-date-display').innerText = dateStr;
-        document.getElementById('user-date-display').innerText = dateStr;
     },
 
     checkRemember() {
-        const saved = localStorage.getItem('sm_remember_v24');
+        const saved = localStorage.getItem('sm_remember');
         if(saved) {
             const d = JSON.parse(saved);
             ui.mode = d.mode;
-            const targetVal = d.val;
-            if(ui.mode === 'admin' && targetVal === "1234") this.loadPanel('admin-panel');
-            else {
-                const m = this.db.members.find(u => u.phone === targetVal);
-                if(m) { this.user = m; this.loadPanel('member-panel'); }
-            }
+            if(ui.mode === 'admin' && d.val === "1234") this.loadPanel('admin-panel');
+            else { const m = this.db.members.find(u => u.phone === d.val); if(m) { this.user = m; this.loadPanel('member-panel'); } }
         }
     },
 
     processLogin() {
         const val = document.getElementById('gate-input').value;
-        const remember = document.getElementById('rememberMe').checked;
-        if(ui.mode === 'admin') {
-            if(val === "1234") {
-                if(remember) localStorage.setItem('sm_remember_v24', JSON.stringify({val, mode:'admin'}));
-                this.loadPanel('admin-panel');
-            }
+        if(ui.mode === 'admin' && val === "1234") {
+            if(document.getElementById('rememberMe').checked) localStorage.setItem('sm_remember', JSON.stringify({val, mode:'admin'}));
+            this.loadPanel('admin-panel');
         } else {
             const m = this.db.members.find(u => u.phone === val);
             if(m) {
-                if(remember) localStorage.setItem('sm_remember_v24', JSON.stringify({val, mode:'member'}));
+                if(document.getElementById('rememberMe').checked) localStorage.setItem('sm_remember', JSON.stringify({val, mode:'member'}));
                 this.user = m; this.loadPanel('member-panel');
             }
         }
@@ -198,12 +189,16 @@ const app = {
         document.getElementById('gate-page').style.display='none';
         document.getElementById('auth-selection').style.display='none';
         document.getElementById(id).style.display='block';
-        if(id==='member-panel') { 
-            document.getElementById('member-nav').style.display='flex'; 
-            this.renderUser(); 
-        } else { 
-            this.renderAdmin(); 
-        }
+        if(id==='member-panel') { document.getElementById('member-nav').style.display='flex'; this.renderUser(); }
+        else this.renderAdmin();
+        this.renderSchedule();
+    },
+
+    saveConfig() {
+        this.db.config.wp = document.getElementById('conf-wp').value;
+        this.db.config.ig = document.getElementById('conf-ig').value;
+        this.db.config.tel = document.getElementById('conf-tel').value;
+        this.save(); alert("Senkronize Edildi!");
     },
 
     addMember() {
@@ -218,86 +213,78 @@ const app = {
         this.db.members.forEach(m => {
             list.innerHTML += `<div class="card"><b>${m.name}</b><br><small>${m.phone}</small>
             <div style="display:flex; gap:10px; margin-top:10px;">
-                <button class="btn" style="margin:0; font-size:12px; background:var(--danger); color:white" onclick="app.dropSess(${m.id})">-1 Seans</button>
+                <button class="btn" style="margin:0; font-size:11px; background:var(--danger); color:white" onclick="app.dropSess(${m.id})">-1 Seans</button>
+                <button class="btn" style="margin:0; font-size:11px;" onclick="window.open('https://wa.me/${m.phone}')">WhatsApp</button>
             </div></div>`;
         });
-        this.renderSchedule();
     },
 
     renderUser() {
         document.getElementById('u-sess').innerText = this.user.sessions;
         document.getElementById('u-qr').innerHTML = "";
         new QRCode(document.getElementById("u-qr"), { text: "ID:" + this.user.id, width: 140, height: 140 });
-        this.renderSchedule();
+        
+        const area = document.getElementById('u-contact-area'); area.innerHTML = "";
+        if(this.db.config.wp) area.innerHTML += `<button class="btn" onclick="window.open('https://wa.me/${this.db.config.wp}')">WhatsApp</button>`;
+        if(this.db.config.tel) area.innerHTML += `<button class="btn" onclick="location.href='tel:${this.db.config.tel}'">Telefon</button>`;
+        if(this.db.config.ig) area.innerHTML += `<button class="btn" style="background:#f09433" onclick="window.open('https://instagram.com/${this.db.config.ig}')">Instagram</button>`;
     },
 
     renderSchedule() {
+        const date = ui.mode === 'admin' ? document.getElementById('admin-date-picker').value : document.getElementById('user-date-picker').value;
         const aGrid = document.getElementById('admin-cal-grid'), uGrid = document.getElementById('user-cal-grid');
-        if(!aGrid || !uGrid) return;
         aGrid.innerHTML = uGrid.innerHTML = "";
+        
         for(let i=7; i<=20; i++){
             const t = i + ":00";
-            const state = this.db.schedule[t] || "FREE";
+            const key = date + "_" + t;
+            const state = this.db.schedule[key] || "FREE";
             const label = ui.lang === 'tr' ? (state==='FREE'?'MÜSAİT':'DOLU') : state;
-            const html = `<div style="padding:10px">${t}</div><div class="cal-slot ${state==='FREE'?'slot-free':'slot-busy'}" data-time="${t}">${label}</div>`;
+            const html = `<div style="padding:10px">${t}</div><div class="cal-slot ${state==='FREE'?'slot-free':'slot-busy'}" data-key="${key}">${label}</div>`;
             aGrid.innerHTML += html; uGrid.innerHTML += html;
         }
+        
         document.querySelectorAll('#admin-cal-grid .cal-slot').forEach(el => {
-            el.onclick = () => { this.toggleSlot(el.dataset.time); };
+            el.onclick = () => {
+                const k = el.dataset.key;
+                this.db.schedule[k] = (this.db.schedule[k] || "FREE") === "FREE" ? "BUSY" : "FREE";
+                this.save(); this.renderSchedule();
+            };
         });
-    },
-
-    toggleSlot(t) {
-        this.db.schedule[t] = (this.db.schedule[t] || "FREE") === "FREE" ? "BUSY" : "FREE";
-        this.save(); this.renderSchedule();
     },
 
     startAdminScanner() {
-        const reader = document.getElementById('admin-reader');
-        reader.style.display='block';
+        const r = document.getElementById('admin-reader'); r.style.display='block';
         const sc = new Html5Qrcode("admin-reader");
         sc.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (text) => {
-            const id = text.split("ID:")[1];
-            const m = this.db.members.find(x => x.id == id);
-            if(m && m.sessions > 0) {
-                m.sessions--; this.save(); this.renderAdmin();
-                alert(m.name + " -1");
-            }
-            sc.stop(); reader.style.display='none';
+            const m = this.db.members.find(x => x.id == text.split("ID:")[1]);
+            if(m && m.sessions > 0) { m.sessions--; this.save(); this.renderAdmin(); alert(m.name + " -1"); }
+            sc.stop(); r.style.display='none';
         });
     },
 
-    dropSess(id) { const m = this.db.members.find(x => x.id == id); if(m.sessions>0) { m.sessions--; this.save(); this.renderAdmin(); }},
-    save() { localStorage.setItem('studio_v24', JSON.stringify(this.db)); },
-    logout() { localStorage.removeItem('sm_remember_v24'); location.reload(); },
+    dropSess(id) { const m = this.db.members.find(x => x.id == id); if(m.sessions>0) { m.sessions--; this.save(); this.renderAdmin(); if(this.user && this.user.id == id) this.renderUser(); }},
+    save() { localStorage.setItem('studio_v25', JSON.stringify(this.db)); },
+    logout() { localStorage.removeItem('sm_remember'); location.reload(); },
     switchTab(id, el) {
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(t => t.style.display='none');
+        document.getElementById(id).style.display='block';
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        el.classList.add('active');
+        el.classList.add('active'); this.renderSchedule();
     }
 };
 
 const ui = {
     lang: 'tr',
-    showGate(mode) { this.mode = mode; document.getElementById('auth-selection').style.display='none'; document.getElementById('gate-page').style.display='flex'; },
+    showGate(m) { this.mode = m; document.getElementById('auth-selection').style.display='none'; document.getElementById('gate-page').style.display='flex'; },
     back() { document.getElementById('gate-page').style.display='none'; document.getElementById('auth-selection').style.display='flex'; },
-    togglePass() { const i = document.getElementById('gate-input'); i.type = i.type==='password'?'text':'password'; },
-    toggleLang() { 
-        this.lang = this.lang === 'tr' ? 'en' : 'tr'; 
-        document.getElementById('langBtn').innerText = this.lang.toUpperCase(); 
-        this.updateTexts();
-        app.updateDateDisplay();
-        app.renderSchedule();
-    },
+    toggleLang() { this.lang = this.lang==='tr'?'en':'tr'; document.getElementById('langBtn').innerText=this.lang.toUpperCase(); this.updateTexts(); app.renderSchedule(); },
     updateTexts() {
         const d = langData[this.lang];
         for(let key in d) { const el = document.getElementById('txt-'+key); if(el) el.innerText = d[key]; }
+        document.getElementById('rules-content').innerHTML = d.rules;
         document.getElementById('nav-home').innerHTML = `🏠<br>${d.navHome}`;
         document.getElementById('nav-cal').innerHTML = `📅<br>${d.navCal}`;
-        document.getElementById('rules-content').innerHTML = ui.lang === 'tr' ? 
-            '• İptaller 6 saat önceden bildirilmelidir.<br>• Paket süresi 30 gündür.<br>• Temiz spor ayakkabı zorunludur.' :
-            '• Cancellations must be 6h before.<br>• Package duration is 30 days.<br>• Clean sports shoes are mandatory.';
     }
 };
 </script>
