@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Diamond Pro | Executive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #000000; --card: #121212; --accent: #d2fe00;
+            --text: #ffffff; --muted: #a1a1a6; --border: #2c2c2e;
+            --success: #30d158; --danger: #ff453a;
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { margin: 0; background-color: var(--bg); color: var(--text); padding-bottom: 120px; overflow-x: hidden; }
+
+        /* --- GLOBAL UI --- */
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .card { background: var(--card); border-radius: 28px; padding: 24px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h1, h2, h3 { letter-spacing: -0.5px; }
+        
+        /* --- BRANDING --- */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 30px 20px; position: sticky; top: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); z-index: 1000; }
+        .brand { display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.3s; }
+        .brand:active { transform: scale(0.95); }
+        .logo { width: 45px; height: 45px; background: var(--accent); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: black; font-weight: 800; font-size: 22px; box-shadow: 0 0 25px rgba(210, 254, 0, 0.4); }
+
+        /* --- INPUTS & BUTTONS --- */
+        input, select, textarea { width: 100%; padding: 18px; margin-top: 10px; border-radius: 16px; border: 1px solid var(--border); background: #1c1c1e; color: white; font-size: 16px; transition: 0.3s; }
+        input:focus { border-color: var(--accent); outline: none; }
+        .btn { width: 100%; padding: 18px; margin-top: 15px; border-radius: 18px; border: none; background: var(--accent); color: black; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .btn:active { transform: scale(0.97); opacity: 0.8; }
+        .btn-ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+
+        /* --- NAVIGATION --- */
+        .nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(18,18,18,0.95); backdrop-filter: blur(30px); display: flex; justify-content: space-around; padding: 20px 10px 40px; border-top: 1px solid var(--border); z-index: 9999; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--muted); text-decoration: none; font-size: 11px; font-weight: 600; transition: 0.3s; cursor: pointer; }
+        .nav-item.active { color: var(--accent); }
+        .nav-item svg { width: 24px; height: 24px; }
+
+        /* --- CALENDAR SYSTEM --- */
+        .cal-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .cal-wrapper { overflow-x: auto; background: var(--card); border-radius: 20px; border: 1px solid var(--border); }
+        .cal-grid { display: grid; grid-template-columns: 80px repeat(7, 1fr); background: var(--border); gap: 1px; min-width: 800px; }
+        .cal-cell { background: var(--bg); height: 55px; display: flex; align-items: center; justify-content: center; font-size: 13px; position: relative; }
+        .cal-h { background: #1c1c1e; font-weight: 800; color: var(--accent); height: 45px; }
+        .busy-slot { background: var(--accent) !important; color: black !important; font-weight: 800; border-radius: 4px; margin: 2px; height: calc(100% - 4px); width: calc(100% - 4px); display: flex; align-items: center; justify-content: center; font-size: 10px; }
+
+        /* --- MEMBER LIST --- */
+        .member-card { display: flex; justify-content: space-between; align-items: center; background: #1c1c1e; padding: 20px; border-radius: 20px; margin-bottom: 12px; border: 1px solid var(--border); }
+        .session-badge { background: rgba(210, 254, 0, 0.1); color: var(--accent); padding: 6px 12px; border-radius: 10px; font-size: 12px; font-weight: 800; }
+
+        .page { display: none; }
+        .page.active { display: block; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- DIET EXPANDED --- */
+        .diet-scroll { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px; }
+        .diet-day { min-width: 140px; background: #1c1c1e; padding: 15px; border-radius: 18px; border: 1px solid var(--border); }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="brand" onclick="app.showPage('home')">
+        <div class="logo">D</div>
+        <h2 style="margin:0">Diamond Pro</h2>
+    </div>
+    <div style="color: var(--muted); font-size: 20px;">👤</div>
+</header>
+
+<div id="home" class="page container active">
+    <div class="card" style="background: linear-gradient(135deg, #d2fe00 0%, #a6cc00 100%); color: black;">
+        <h3 style="margin:0; opacity:0.8;">Hoş Geldiniz,</h3>
+        <h1 style="margin:5px 0 20px;">İşletme Özeti</h1>
+        <div style="display:flex; justify-content:space-between;">
+            <div><small>Toplam Ciro</small><div style="font-size:24px; font-weight:800;">₺<span id="dash-ciro">0</span></div></div>
+            <div><small>Aktif Üye</small><div style="font-size:24px; font-weight:800;" id="dash-members">0</div></div>
+        </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+        <div class="card" style="text-align:center;" onclick="app.showPage('members')"><h3>👥</h3><small>Üyeler</small></div>
+        <div class="card" style="text-align:center;" onclick="app.showPage('calendar')"><h3>📅</h3><small>Takvim</small></div>
+        <div class="card" style="text-align:center;" onclick="app.showPage('finance')"><h3>💰</h3><small>Finans</small></div>
+        <div class="card" style="text-align:center;" onclick="app.showPage('diet')"><h3>🍎</h3><small>Diyet</small></div>
+    </div>
+</div>
+
+<div id="members" class="page container">
+    <h2>Üye Yönetimi</h2>
+    <div class="card">
+        <input type="text" id="memberName" placeholder="Üye Adı Soyadı">
+        <button class="btn" onclick="app.addMember()">Yeni Kayıt Oluştur</button>
+    </div>
+    <div id="memberList"></div>
+</div>
+
+<div id="calendar" class="page container">
+    <div class="cal-header-row">
+        <h2>Ders Programı</h2>
+        <input type="date" id="calPicker" onchange="app.renderCalendar()" style="width: auto; margin:0; padding:10px;">
+    </div>
+    <div class="cal-wrapper">
+        <div class="cal-grid" id="calGrid"></div>
+    </div>
+</div>
+
+<div id="finance" class="page container">
+    <h2>Finansal İşlemler</h2>
+    <div class="card">
+        <canvas id="finChart" style="max-height: 200px;"></canvas>
+    </div>
+    <div class="card">
+        <h4>Ödeme Tahsilatı</h4>
+        <select id="finMemberSelect"></select>
+        <select id="finPackSelect">
+            <option value="4">4 Seans Tanımla</option>
+            <option value="8">8 Seans Tanımla</option>
+            <option value="12">12 Seans Tanımla</option>
+            <option value="16">16 Seans Tanımla</option>
+        </select>
+        <input type="number" id="finAmount" placeholder="Tahsil Edilen Tutar (₺)">
+        <button class="btn" onclick="app.collectPayment()">Ödemeyi Sisteme İşle</button>
+    </div>
+</div>
+
+<div id="diet" class="page container">
+    <h2>Genişletilmiş Beslenme</h2>
+    <div class="card">
+        <h4>Program Seçimi</h4>
+        <select id="dietPlan" onchange="app.renderDiet()">
+            <option value="1500">Haftalık 1500 kcal</option>
+            <option value="2000">Haftalık 2000 kcal</option>
+        </select>
+    </div>
+    <div id="dietDays"></div>
+</div>
+
+<nav class="nav">
+    <div class="nav-item active" onclick="app.showPage('home', this)">🏠<span>Ana Sayfa</span></div>
+    <div class="nav-item" onclick="app.showPage('members', this)">👥<span>Üyeler</span></div>
+    <div class="nav-item" onclick="app.showPage('calendar', this)">📅<span>Takvim</span></div>
+    <div class="nav-item" onclick="app.showPage('finance', this)">💰<span>Finans</span></div>
+    <div class="nav-item" onclick="app.showPage('diet', this)">🍎<span>Diyet</span></div>
+</nav>
+
+<script>
+const app = {
+    // Kurumsal Veri Yapısı
+    db: JSON.parse(localStorage.getItem('diamond_executive_db')) || {
+        members: [],
+        revenue: 0,
+        schedule: {}, // Tarih bazlı doluluk
+        salesHistory: []
+    },
+
+    init() {
+        document.getElementById('calPicker').valueAsDate = new Date();
+        this.updateDashboard();
+        this.renderMembers();
+        this.renderDiet();
+    },
+
+    showPage(pageId, navEl) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        if(navEl) {
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            navEl.classList.add('active');
+        }
+        if(pageId === 'calendar') this.renderCalendar();
+        if(pageId === 'finance') this.initFinanceChart();
+        window.scrollTo(0,0);
+    },
+
+    // --- MEMBER LOGIC ---
+    addMember() {
+        const name = document.getElementById('memberName').value.trim();
+        if(!name) return;
+        this.db.members.push({ id: Date.now(), name, sessions: 0 });
+        this.save();
+        this.renderMembers();
+        this.updateDashboard();
+        document.getElementById('memberName').value = '';
+    },
+
+    renderMembers() {
+        const container = document.getElementById('memberList');
+        const select = document.getElementById('finMemberSelect');
+        container.innerHTML = '';
+        select.innerHTML = '<option value="">Üye Seçiniz</option>';
+
+        this.db.members.forEach(m => {
+            container.innerHTML += `
+                <div class="member-card">
+                    <div><b>${m.name}</b></div>
+                    <div style="display:flex; align-items:center; gap:15px;">
+                        <div class="session-badge">${m.sessions} Seans</div>
+                        <button class="btn" style="width:auto; margin:0; padding:10px 15px; font-size:12px;" onclick="app.checkIn(${m.id})">Check-in</button>
+                    </div>
+                </div>`;
+            select.innerHTML += `<option value="${m.id}">${m.name}</option>`;
+        });
+    },
+
+    checkIn(id) {
+        const m = this.db.members.find(x => x.id === id);
+        if(m && m.sessions > 0) {
+            m.sessions--;
+            this.save();
+            this.renderMembers();
+            alert(`${m.name} için check-in yapıldı. Kalan: ${m.sessions}`);
+        } else {
+            alert("Yetersiz seans! Lütfen paket yüklemesi yapın.");
+        }
+    },
+
+    // --- FINANCE LOGIC ---
+    collectPayment() {
+        const mId = document.getElementById('finMemberSelect').value;
+        const count = parseInt(document.getElementById('finPackSelect').value);
+        const price = parseInt(document.getElementById('finAmount').value);
+
+        if(!mId || !price) return alert("Lütfen tüm alanları doldurun.");
+
+        const m = this.db.members.find(x => x.id == mId);
+        m.sessions += count;
+        this.db.revenue += price;
+        this.db.salesHistory.push({ date: new Date().toLocaleDateString(), amount: price });
+
+        this.save();
+        this.renderMembers();
+        this.updateDashboard();
+        this.initFinanceChart();
+        alert("Tahsilat onaylandı ve seanslar tanımlandı.");
+    },
+
+    initFinanceChart() {
+        const ctx = document.getElementById('finChart').getContext('2d');
+        if(window.fChart) window.fChart.destroy();
+        window.fChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Hafta 1', 'Hafta 2', 'Hafta 3', 'Hafta 4'],
+                datasets: [{
+                    label: 'Gelir Akışı',
+                    data: [this.db.revenue * 0.4, this.db.revenue * 0.6, this.db.revenue * 0.8, this.db.revenue],
+                    borderColor: '#d2fe00',
+                    borderWidth: 4,
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(210, 254, 0, 0.05)'
+                }]
+            },
+            options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
+        });
+    },
+
+    // --- CALENDAR LOGIC ---
+    renderCalendar() {
+        const date = document.getElementById('calPicker').value;
+        const grid = document.getElementById('calGrid');
+        grid.innerHTML = '';
+        const headers = ['Saat', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
+        headers.forEach(h => grid.innerHTML += `<div class="cal-cell cal-h">${h}</div>`);
+
+        for(let h = 7; h <= 22; h++) {
+            grid.innerHTML += `<div class="cal-cell" style="font-weight:800; background:#1c1c1e;">${h}:00</div>`;
+            for(let d = 1; d <= 7; d++) {
+                const slotId = `${date}-${d}-${h}`;
+                const isBusy = this.db.schedule[slotId];
+                grid.innerHTML += `
+                    <div class="cal-cell" onclick="app.toggleSlot('${slotId}')">
+                        ${isBusy ? '<div class="busy-slot">DOLU</div>' : ''}
+                    </div>`;
+            }
+        }
+    },
+
+    toggleSlot(id) {
+        this.db.schedule[id] = !this.db.schedule[id];
+        this.save();
+        this.renderCalendar();
+    },
+
+    // --- DIET LOGIC ---
+    renderDiet() {
+        const plan = document.getElementById('dietPlan').value;
+        const container = document.getElementById('dietDays');
+        const days = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
+        container.innerHTML = '';
+        
+        days.forEach(day => {
+            container.innerHTML += `
+                <div class="card">
+                    <h4 style="margin:0 0 10px; color:var(--accent);">${day}</h4>
+                    <p style="font-size:14px; color:var(--muted); line-height:1.6;">
+                        <b>Sabah:</b> 2-3 Yumurta, Avokado, Yeşillik<br>
+                        <b>Öğle:</b> 150g Izgara Protein, Mevsim Sebzeleri<br>
+                        <b>Akşam:</b> Hafif Sebze Yemeği veya Çorba
+                    </p>
+                </div>`;
+        });
+    },
+
+    updateDashboard() {
+        document.getElementById('dash-ciro').innerText = this.db.revenue.toLocaleString();
+        document.getElementById('dash-members').innerText = this.db.members.length;
+    },
+
+    save() { localStorage.setItem('diamond_executive_db', JSON.stringify(this.db)); }
+};
+
+app.init();
+</script>
+</body>
+</html>
