@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
+
 <head>
 
 <meta charset="UTF-8">
@@ -12,6 +13,8 @@
 
 <style>
 
+/* GLOBAL */
+
 body{
 margin:0;
 font-family:-apple-system,BlinkMacSystemFont;
@@ -21,41 +24,76 @@ color:white;
 
 header{
 background:#020617;
-padding:15px;
+padding:18px;
 text-align:center;
-font-size:20px;
+font-size:22px;
 }
 
 .container{
-padding:15px;
+padding:20px;
 }
 
 .card{
 background:#1e293b;
-padding:15px;
+padding:18px;
+border-radius:14px;
 margin-bottom:15px;
-border-radius:12px;
 }
 
 input{
 width:100%;
-padding:10px;
+padding:12px;
 margin-top:6px;
-border:none;
 border-radius:8px;
+border:none;
 }
 
 button{
 width:100%;
 padding:12px;
 margin-top:10px;
-border:none;
 border-radius:10px;
+border:none;
 background:#3b82f6;
 color:white;
+font-size:15px;
 }
 
+/* SPLASH */
+
+#splash{
+
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+
+background:#020617;
+
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+
+font-size:30px;
+
+animation:splash 3s forwards;
+
+}
+
+@keyframes splash{
+
+0%{opacity:1}
+85%{opacity:1}
+100%{opacity:0;visibility:hidden}
+
+}
+
+/* NAV */
+
 nav{
+
 position:fixed;
 bottom:0;
 left:0;
@@ -64,9 +102,43 @@ background:#020617;
 display:flex;
 justify-content:space-around;
 padding:10px;
+
 }
 
-.success{color:#22c55e;}
+nav button{
+
+width:auto;
+background:none;
+
+}
+
+/* LIST */
+
+ul{
+
+list-style:none;
+padding:0;
+
+}
+
+li{
+
+background:#334155;
+padding:10px;
+margin-bottom:6px;
+border-radius:8px;
+
+}
+
+/* SUCCESS */
+
+.success{
+color:#22c55e;
+}
+
+.error{
+color:#ef4444;
+}
 
 </style>
 
@@ -74,41 +146,111 @@ padding:10px;
 
 <body>
 
-<header>💎 DiamondPro</header>
+<div id="splash">
 
-<div id="login" class="container">
+💎 DiamondPro
+<div style="font-size:14px;margin-top:10px">
+Studio Management System
+</div>
+
+</div>
+
+<header>
+
+DiamondPro Dashboard
+
+</header>
+
+<div class="container" id="loginPage">
 
 <div class="card">
 
 <h3>Yönetici Girişi</h3>
 
-<input id="user" placeholder="Kullanıcı">
-<input id="pass" type="password" placeholder="Şifre">
+<input id="adminUser" placeholder="Kullanıcı">
+<input id="adminPass" type="password" placeholder="Şifre">
 
-<button onclick="login()">Giriş</button>
-
-</div>
+<button onclick="adminLogin()">Giriş</button>
 
 </div>
-
-<div id="app" style="display:none">
-
-<div class="container" id="home">
 
 <div class="card">
 
-<h3>Yeni Öğrenci</h3>
+<h3>Üye Girişi</h3>
+
+<input id="memberTel" placeholder="Telefon">
+<input id="memberPass" placeholder="Şifre">
+
+<button onclick="memberLogin()">Giriş</button>
+
+</div>
+
+<div id="loginError"></div>
+
+</div>
+
+<div id="adminPanel" style="display:none">
+
+<div class="container">
+
+<div class="card">
+
+<h3>Yeni Üye</h3>
 
 <input id="name" placeholder="Ad">
+<input id="tel" placeholder="Telefon">
 <input id="sessions" placeholder="Seans">
 
-<button onclick="addStudent()">Kaydet</button>
+<button onclick="addMember()">Üye Ekle</button>
 
 </div>
 
 <div class="card">
 
-<h3>Ödeme</h3>
+<h3>QR Check-in</h3>
+
+<div id="reader"></div>
+
+<div id="checkinResult"></div>
+
+</div>
+
+<div class="card">
+
+<h3>Üyeler</h3>
+
+<ul id="memberList"></ul>
+
+</div>
+
+<div class="card">
+
+<h3>Ders Takvimi</h3>
+
+<input id="lessonName" placeholder="Ders">
+<input id="lessonTime" placeholder="Saat">
+
+<button onclick="addLesson()">Ders Ekle</button>
+
+<ul id="lessonList"></ul>
+
+</div>
+
+<div class="card">
+
+<h3>Eğitmen Paneli</h3>
+
+<input id="trainerName" placeholder="Eğitmen">
+
+<button onclick="addTrainer()">Eğitmen Ekle</button>
+
+<ul id="trainerList"></ul>
+
+</div>
+
+<div class="card">
+
+<h3>Ödeme Ekle</h3>
 
 <input id="payStudent" placeholder="Öğrenci ID">
 <input id="amount" placeholder="Tutar">
@@ -121,7 +263,7 @@ padding:10px;
 
 <h3>Gelir Grafiği</h3>
 
-<canvas id="chart"></canvas>
+<canvas id="incomeChart"></canvas>
 
 </div>
 
@@ -129,33 +271,23 @@ padding:10px;
 
 <h3>AI Analiz</h3>
 
-<div id="ai"></div>
+<div id="aiBox"></div>
 
 </div>
 
 </div>
 
-<div class="container" id="qr" style="display:none">
+</div>
+
+<div id="memberPanel" style="display:none">
+
+<div class="container">
 
 <div class="card">
 
-<h3>QR Check-in</h3>
+<h3>Üye Paneli</h3>
 
-<div id="reader"></div>
-
-<div id="result"></div>
-
-</div>
-
-</div>
-
-<div class="container" id="students" style="display:none">
-
-<div class="card">
-
-<h3>Öğrenciler</h3>
-
-<ul id="list"></ul>
+<div id="memberInfo"></div>
 
 </div>
 
@@ -165,95 +297,156 @@ padding:10px;
 
 <nav>
 
-<button onclick="show('home')">🏠</button>
-<button onclick="show('qr')">📷</button>
-<button onclick="show('students')">👥</button>
+<button onclick="showAdmin()">🏠</button>
+<button onclick="showMembers()">👥</button>
+<button onclick="showQR()">📷</button>
 
 </nav>
 
 <script>
 
-let students=JSON.parse(localStorage.getItem("students")||"[]")
+/* LOGIN */
+
+const ADMIN_USER="admin"
+const ADMIN_PASS="DP2026secure"
+
+let members=JSON.parse(localStorage.getItem("members")||"[]")
+let lessons=JSON.parse(localStorage.getItem("lessons")||"[]")
+let trainers=JSON.parse(localStorage.getItem("trainers")||"[]")
 let payments=JSON.parse(localStorage.getItem("payments")||"[]")
 let attendance=JSON.parse(localStorage.getItem("attendance")||"[]")
 
 function save(){
 
-localStorage.setItem("students",JSON.stringify(students))
+localStorage.setItem("members",JSON.stringify(members))
+localStorage.setItem("lessons",JSON.stringify(lessons))
+localStorage.setItem("trainers",JSON.stringify(trainers))
 localStorage.setItem("payments",JSON.stringify(payments))
 localStorage.setItem("attendance",JSON.stringify(attendance))
 
 }
 
-function login(){
+/* ADMIN LOGIN */
 
-if(
-document.getElementById("user").value=="admin" &&
-document.getElementById("pass").value=="1234"
-){
+function adminLogin(){
 
-document.getElementById("login").style.display="none"
-document.getElementById("app").style.display="block"
+let u=document.getElementById("adminUser").value
+let p=document.getElementById("adminPass").value
 
-}
+if(u===ADMIN_USER && p===ADMIN_PASS){
 
-}
+document.getElementById("loginPage").style.display="none"
+document.getElementById("adminPanel").style.display="block"
 
-function show(id){
+renderAll()
 
-["home","qr","students"].forEach(x=>{
+}else{
 
-document.getElementById(x).style.display="none"
-
-})
-
-document.getElementById(id).style.display="block"
+document.getElementById("loginError").innerHTML="<span class='error'>Hatalı giriş</span>"
 
 }
 
-function addStudent(){
+}
 
-let student={
+/* MEMBER LOGIN */
+
+function memberLogin(){
+
+let tel=document.getElementById("memberTel").value
+let pass=document.getElementById("memberPass").value
+
+let member=members.find(m=>m.tel===tel)
+
+if(!member){
+
+alert("Üye bulunamadı")
+return
+
+}
+
+if(pass!==tel){
+
+alert("Şifre telefon numarası olmalı")
+return
+
+}
+
+document.getElementById("loginPage").style.display="none"
+document.getElementById("memberPanel").style.display="block"
+
+document.getElementById("memberInfo").innerHTML=
+`
+Ad: ${member.name}<br>
+Kalan Seans: ${member.sessions}<br>
+QR ID: ${member.id}
+`
+
+}
+
+/* MEMBER ADD */
+
+function addMember(){
+
+let m={
+
 id:Date.now(),
 name:document.getElementById("name").value,
+tel:document.getElementById("tel").value,
 sessions:Number(document.getElementById("sessions").value)
+
 }
 
-students.push(student)
+members.push(m)
 
 save()
 
-renderStudents()
+renderMembers()
 
 }
 
-function renderStudents(){
+/* LESSON ADD */
 
-let list=document.getElementById("list")
+function addLesson(){
 
-list.innerHTML=""
+let l={
 
-students.forEach(s=>{
-
-list.innerHTML+=`
-<li>
-${s.name} (Seans:${s.sessions})
-<br>
-QR ID:${s.id}
-</li>
-`
-
-})
+name:document.getElementById("lessonName").value,
+time:document.getElementById("lessonTime").value
 
 }
+
+lessons.push(l)
+
+save()
+
+renderLessons()
+
+}
+
+/* TRAINER */
+
+function addTrainer(){
+
+let t=document.getElementById("trainerName").value
+
+trainers.push(t)
+
+save()
+
+renderTrainers()
+
+}
+
+/* PAYMENT */
 
 function addPayment(){
 
+let amount=Number(document.getElementById("amount").value)
+
 payments.push({
 
-student:document.getElementById("payStudent").value,
-amount:Number(document.getElementById("amount").value),
-time:new Date()
+amount:amount,
+date:new Date()
 
 })
 
@@ -263,40 +456,125 @@ updateChart()
 
 }
 
+/* QR CHECKIN */
+
 function checkin(id){
 
-let student=students.find(s=>s.id==id)
+let member=members.find(m=>m.id==id)
 
-if(!student){
+if(!member){
 
-document.getElementById("result").innerHTML="Öğrenci bulunamadı"
-
+document.getElementById("checkinResult").innerText="Üye bulunamadı"
 return
 
 }
 
-if(student.sessions<=0){
+if(member.sessions<=0){
 
-document.getElementById("result").innerHTML="Seans bitti"
-
+document.getElementById("checkinResult").innerText="Seans bitti"
 return
 
 }
 
-student.sessions--
+member.sessions--
 
-attendance.push({id,time:new Date()})
+attendance.push({
+
+id:id,
+time:new Date()
+
+})
 
 save()
 
-renderStudents()
+renderMembers()
 
-document.getElementById("result").innerHTML=
-"<span class='success'>Seans düşüldü</span>"
+document.getElementById("checkinResult").innerHTML="<span class='success'>Seans düşüldü</span>"
 
 updateAI()
 
 }
+
+/* RENDER */
+
+function renderMembers(){
+
+let list=document.getElementById("memberList")
+
+list.innerHTML=""
+
+members.forEach(m=>{
+
+list.innerHTML+=`
+<li>
+${m.name}
+<br>
+Tel:${m.tel}
+<br>
+Seans:${m.sessions}
+<br>
+QR:${m.id}
+</li>
+`
+
+})
+
+}
+
+function renderLessons(){
+
+let list=document.getElementById("lessonList")
+
+list.innerHTML=""
+
+lessons.forEach(l=>{
+
+list.innerHTML+=`
+<li>
+${l.name} - ${l.time}
+</li>
+`
+
+})
+
+}
+
+function renderTrainers(){
+
+let list=document.getElementById("trainerList")
+
+list.innerHTML=""
+
+trainers.forEach(t=>{
+
+list.innerHTML+=`
+<li>${t}</li>
+`
+
+})
+
+}
+
+/* CHART */
+
+const ctx=document.getElementById("incomeChart")
+
+const chart=new Chart(ctx,{
+type:"line",
+data:{labels:["Gelir"],datasets:[{data:[0]}]}
+})
+
+function updateChart(){
+
+let total=payments.reduce((a,b)=>a+b.amount,0)
+
+chart.data.datasets[0].data=[total]
+
+chart.update()
+
+}
+
+/* AI ANALYSIS */
 
 function updateAI(){
 
@@ -312,29 +590,12 @@ hours[h]=(hours[h]||0)+1
 
 let busiest=Object.keys(hours).reduce((a,b)=>hours[a]>hours[b]?a:b,0)
 
-document.getElementById("ai").innerHTML="En yoğun saat: "+busiest+":00"
+document.getElementById("aiBox").innerHTML=
+"En yoğun saat: "+busiest+":00"
 
 }
 
-const ctx=document.getElementById("chart")
-
-const chart=new Chart(ctx,{
-type:"bar",
-data:{
-labels:["Gelir"],
-datasets:[{data:[0]}]
-}
-})
-
-function updateChart(){
-
-let total=payments.reduce((a,b)=>a+b.amount,0)
-
-chart.data.datasets[0].data=[total]
-
-chart.update()
-
-}
+/* QR */
 
 const scanner=new Html5QrcodeScanner("reader",{fps:10})
 
@@ -344,9 +605,17 @@ checkin(Number(result))
 
 })
 
-renderStudents()
+/* INIT */
+
+function renderAll(){
+
+renderMembers()
+renderLessons()
+renderTrainers()
 updateChart()
 updateAI()
+
+}
 
 </script>
 
