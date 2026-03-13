@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Studio Pro V25</title>
+    <title>Studio Pro V26</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -44,7 +44,7 @@
 <div id="gate-page" style="position:fixed; inset:0; background:var(--bg); z-index:10000; display:none; flex-direction:column; align-items:center; justify-content:center; padding:20px;">
     <div class="card" style="max-width:380px; width:100%;">
         <h3 id="txt-gate-title">Giriş Yap</h3>
-        <input type="password" id="gate-input" placeholder="Şifre / Telefon">
+        <input type="tel" id="gate-input" placeholder="Şifre (1234) veya Telefon">
         <label style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); margin-bottom:15px;">
             <input type="checkbox" id="rememberMe" style="width:16px;"> <span id="txt-remember">Beni Hatırla</span>
         </label>
@@ -68,14 +68,21 @@
             <h4 id="txt-studio-info">İletişim & Senkronizasyon</h4>
             <input type="text" id="conf-wp" placeholder="WhatsApp (905...)">
             <input type="text" id="conf-ig" placeholder="Instagram Adı">
-            <input type="text" id="conf-tel" placeholder="Telefon">
+            <input type="text" id="conf-tel" placeholder="Sabit Telefon">
             <button class="btn" style="background:var(--success)" onclick="app.saveConfig()" id="txt-save-conf">Bilgileri Güncelle</button>
+        </div>
+
+        <div class="card" style="background: #1a1a1c;">
+            <h4 style="margin:0 0 10px 0; color:var(--accent);">💾 Veri Güvenliği</h4>
+            <p style="font-size:11px; color:var(--muted);">Cihaz değişikliği veya silinmeye karşı verilerinizi kopyalayıp saklayın.</p>
+            <button class="btn" style="padding:10px; font-size:12px; background:white;" onclick="app.exportData()">Veriyi Kopyala (Backup)</button>
+            <button class="btn" style="padding:10px; font-size:12px; background:var(--muted); color:white;" onclick="app.importData()">Veriyi Yükle (Restore)</button>
         </div>
 
         <div class="card">
             <h4 id="txt-add-member">Üye Ekle</h4>
             <input type="text" id="mName" placeholder="Ad Soyad">
-            <input type="tel" id="mPhone" placeholder="Telefon">
+            <input type="tel" id="mPhone" placeholder="Telefon (Giriş Şifresi)">
             <select id="mPack"><option value="8">8 Seans</option><option value="12">12 Seans</option></select>
             <button class="btn" onclick="app.addMember()" id="txt-save">Kaydet</button>
         </div>
@@ -99,62 +106,35 @@
                 <h1 id="u-sess" style="font-size:70px; color:var(--accent); margin:0;">0</h1>
                 <p id="txt-rem-sess" style="color:var(--muted); font-size:12px;">KALAN SEANS</p>
             </div>
-            
-            <div class="card">
-                <h4 id="txt-rules-title">Stüdyo Kuralları</h4>
-                <p id="rules-content" style="font-size:13px; color:var(--muted);"></p>
-            </div>
-
-            <div class="card">
-                <h4 id="txt-contact-studio">Bize Ulaşın</h4>
-                <div id="u-contact-area" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
-            </div>
+            <div class="card"><h4 id="txt-rules-title">Kurallar</h4><p id="rules-content" style="font-size:13px; color:var(--muted);"></p></div>
+            <div class="card"><h4 id="txt-contact-studio">Bize Ulaşın</h4><div id="u-contact-area" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div></div>
         </div>
-
         <div id="tab-cal" class="tab-content" style="display:none;">
-            <h3 id="txt-nav-cal">Müsaitlik Bak</h3>
-            <div class="card">
-                <input type="date" id="user-date-picker" onchange="app.renderSchedule()">
-                <div id="user-cal-grid" class="cal-grid"></div>
-            </div>
+            <h3 id="txt-nav-cal">Müsaitlik</h3>
+            <div class="card"><input type="date" id="user-date-picker" onchange="app.renderSchedule()"><div id="user-cal-grid" class="cal-grid"></div></div>
         </div>
     </div>
 </div>
 
-<nav class="nav" id="member-nav">
-    <div class="nav-item active" onclick="app.switchTab('tab-home', this)" id="nav-home">🏠<br>Panel</div>
-    <div class="nav-item" onclick="app.switchTab('tab-cal', this)" id="nav-cal">📅<br>Takvim</div>
-</nav>
+<nav class="nav" id="member-nav"><div class="nav-item active" onclick="app.switchTab('tab-home', this)" id="nav-home">🏠<br>Panel</div><div class="nav-item" onclick="app.switchTab('tab-cal', this)" id="nav-cal">📅<br>Takvim</div></nav>
 
 <script>
 const langData = {
-    tr: {
-        welcome: "STUDIO PRO", btnAdmin: "👑 Yönetici Paneli", btnMember: "👤 Üye Girişi",
-        gateTitle: "Giriş", btnLogin: "Giriş", btnBack: "Geri", remember: "Beni Hatırla",
-        adminTitle: "İşletme Yönetimi", adminScan: "QR Seans Düş", studioInfo: "İletişim Bilgileri",
-        saveConf: "Güncelle", addMember: "Üye Ekle", save: "Kaydet", remSess: "KALAN SEANS",
-        rulesTitle: "Stüdyo Kuralları", contactStudio: "Bize Ulaşın", calManage: "Program Yönetimi",
-        navHome: "Panel", navCal: "Takvim", free: "MÜSAİT", busy: "DOLU",
-        rules: "• İptaller 6 saat önceden.<br>• Paket süresi 30 gün.<br>• Temiz ayakkabı zorunludur."
-    },
-    en: {
-        welcome: "STUDIO PRO", btnAdmin: "👑 Admin Panel", btnMember: "👤 Member Login",
-        gateTitle: "Login", btnLogin: "Login", btnBack: "Back", remember: "Remember Me",
-        adminTitle: "Management", adminScan: "QR Session", studioInfo: "Contact Info",
-        saveConf: "Update", addMember: "Add Member", save: "Save", remSess: "REMAINING",
-        rulesTitle: "Studio Rules", contactStudio: "Contact Us", calManage: "Schedule Management",
-        navHome: "Home", navCal: "Schedule", free: "FREE", busy: "BUSY",
-        rules: "• 6h cancellation policy.<br>• 30-day package limit.<br>• Clean shoes mandatory."
-    }
+    tr: { welcome: "STUDIO PRO", btnAdmin: "👑 Yönetici Paneli", btnMember: "👤 Üye Girişi", gateTitle: "Giriş", btnLogin: "Giriş", btnBack: "Geri", remember: "Beni Hatırla", adminTitle: "Yönetim", adminScan: "QR Seans Düş", studioInfo: "İletişim Bilgileri", saveConf: "Güncelle", addMember: "Üye Ekle", save: "Kaydet", remSess: "KALAN SEANS", rulesTitle: "Kurallar", contactStudio: "İletişim", calManage: "Takvim Yönetimi", navHome: "Panel", navCal: "Takvim", free: "MÜSAİT", busy: "DOLU", rules: "• İptaller 6 saat önceden.<br>• Paket 30 gün geçerli.<br>• Temiz ayakkabı şart." },
+    en: { welcome: "STUDIO PRO", btnAdmin: "👑 Admin Panel", btnMember: "👤 Member Login", gateTitle: "Login", btnLogin: "Login", btnBack: "Back", remember: "Remember Me", adminTitle: "Management", adminScan: "QR Session", studioInfo: "Contact Info", saveConf: "Update", addMember: "Add Member", save: "Save", remSess: "REMAINING", rulesTitle: "Rules", contactStudio: "Contact", calManage: "Schedule", navHome: "Home", navCal: "Schedule", free: "FREE", busy: "BUSY", rules: "• 6h cancellation.<br>• 30-day limit.<br>• Clean shoes mandatory." }
 };
 
 const app = {
-    db: JSON.parse(localStorage.getItem('studio_v25')) || { members: [], config: { wp: "", ig: "", tel: "" }, schedule: {} },
-    user: null,
+    db: { members: [], config: { wp: "", ig: "", tel: "" }, schedule: {} },
 
     init() {
+        // VERİ YÜKLEME GARANTİSİ
+        const saved = localStorage.getItem('studio_v26');
+        if (saved) {
+            try { this.db = JSON.parse(saved); } catch(e) { console.error("Veri hatası"); }
+        }
+        
         ui.updateTexts();
-        // Tarih seçicileri bugüne ayarla
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('admin-date-picker').value = today;
         document.getElementById('user-date-picker').value = today;
@@ -164,8 +144,7 @@ const app = {
     checkRemember() {
         const saved = localStorage.getItem('sm_remember');
         if(saved) {
-            const d = JSON.parse(saved);
-            ui.mode = d.mode;
+            const d = JSON.parse(saved); ui.mode = d.mode;
             if(ui.mode === 'admin' && d.val === "1234") this.loadPanel('admin-panel');
             else { const m = this.db.members.find(u => u.phone === d.val); if(m) { this.user = m; this.loadPanel('member-panel'); } }
         }
@@ -181,7 +160,7 @@ const app = {
             if(m) {
                 if(document.getElementById('rememberMe').checked) localStorage.setItem('sm_remember', JSON.stringify({val, mode:'member'}));
                 this.user = m; this.loadPanel('member-panel');
-            }
+            } else { alert("Hatalı giriş!"); }
         }
     },
 
@@ -194,11 +173,30 @@ const app = {
         this.renderSchedule();
     },
 
+    save() { localStorage.setItem('studio_v26', JSON.stringify(this.db)); },
+
+    exportData() {
+        const data = JSON.stringify(this.db);
+        navigator.clipboard.writeText(data).then(() => alert("Tüm veriler panoya kopyalandı! Bir yere yapıştırıp saklayın."));
+    },
+
+    importData() {
+        const data = prompt("Daha önce kopyaladığınız veriyi buraya yapıştırın:");
+        if (data) {
+            try { 
+                this.db = JSON.parse(data); 
+                this.save(); 
+                alert("Veriler başarıyla yüklendi!"); 
+                location.reload(); 
+            } catch(e) { alert("Hatalı veri formatı!"); }
+        }
+    },
+
     saveConfig() {
         this.db.config.wp = document.getElementById('conf-wp').value;
         this.db.config.ig = document.getElementById('conf-ig').value;
         this.db.config.tel = document.getElementById('conf-tel').value;
-        this.save(); alert("Senkronize Edildi!");
+        this.save(); alert("Güncellendi!");
     },
 
     addMember() {
@@ -223,7 +221,6 @@ const app = {
         document.getElementById('u-sess').innerText = this.user.sessions;
         document.getElementById('u-qr').innerHTML = "";
         new QRCode(document.getElementById("u-qr"), { text: "ID:" + this.user.id, width: 140, height: 140 });
-        
         const area = document.getElementById('u-contact-area'); area.innerHTML = "";
         if(this.db.config.wp) area.innerHTML += `<button class="btn" onclick="window.open('https://wa.me/${this.db.config.wp}')">WhatsApp</button>`;
         if(this.db.config.tel) area.innerHTML += `<button class="btn" onclick="location.href='tel:${this.db.config.tel}'">Telefon</button>`;
@@ -234,16 +231,13 @@ const app = {
         const date = ui.mode === 'admin' ? document.getElementById('admin-date-picker').value : document.getElementById('user-date-picker').value;
         const aGrid = document.getElementById('admin-cal-grid'), uGrid = document.getElementById('user-cal-grid');
         aGrid.innerHTML = uGrid.innerHTML = "";
-        
         for(let i=7; i<=20; i++){
-            const t = i + ":00";
-            const key = date + "_" + t;
+            const t = i + ":00"; const key = date + "_" + t;
             const state = this.db.schedule[key] || "FREE";
             const label = ui.lang === 'tr' ? (state==='FREE'?'MÜSAİT':'DOLU') : state;
             const html = `<div style="padding:10px">${t}</div><div class="cal-slot ${state==='FREE'?'slot-free':'slot-busy'}" data-key="${key}">${label}</div>`;
             aGrid.innerHTML += html; uGrid.innerHTML += html;
         }
-        
         document.querySelectorAll('#admin-cal-grid .cal-slot').forEach(el => {
             el.onclick = () => {
                 const k = el.dataset.key;
@@ -264,7 +258,6 @@ const app = {
     },
 
     dropSess(id) { const m = this.db.members.find(x => x.id == id); if(m.sessions>0) { m.sessions--; this.save(); this.renderAdmin(); if(this.user && this.user.id == id) this.renderUser(); }},
-    save() { localStorage.setItem('studio_v25', JSON.stringify(this.db)); },
     logout() { localStorage.removeItem('sm_remember'); location.reload(); },
     switchTab(id, el) {
         document.querySelectorAll('.tab-content').forEach(t => t.style.display='none');
