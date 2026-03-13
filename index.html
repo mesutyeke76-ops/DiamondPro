@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Studio Pro V26</title>
+    <title>Studio Pro V27</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -17,8 +17,8 @@
 
         .container { max-width: 600px; margin: 0 auto; padding: 20px; display: none; }
         .card { background: var(--card); border-radius: 24px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); }
-        .btn { width: 100%; padding: 16px; border-radius: 16px; border: none; background: var(--accent); color: black; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
-        input, select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--border); background: #1a1a1c; color: white; margin-bottom: 10px; outline: none; }
+        .btn { width: 100%; padding: 14px; border-radius: 12px; border: none; background: var(--accent); color: black; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
+        input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: #1a1a1c; color: white; margin-bottom: 10px; outline: none; }
         
         .lang-switch { position: fixed; top: 15px; right: 15px; z-index: 10001; background: var(--accent); color: black; padding: 8px 12px; border-radius: 10px; font-weight: 800; cursor: pointer; border: none; font-size: 11px; }
         .nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10,10,12,0.95); backdrop-filter: blur(20px); display: none; justify-content: space-around; padding: 15px 0 35px; border-top: 1px solid var(--border); z-index: 5000; }
@@ -28,7 +28,10 @@
         .cal-grid { display: grid; grid-template-columns: 80px 1fr; gap: 8px; }
         .cal-slot { padding: 12px; border-radius: 10px; background: #1a1a1c; font-size: 13px; text-align: center; cursor: pointer; }
         .slot-free { color: var(--success); } .slot-busy { color: var(--danger); font-weight: 800; }
-        #admin-reader { width: 100%; border-radius: 20px; overflow: hidden; display: none; margin-top: 15px; border: 2px solid var(--accent); }
+        
+        .member-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+        .control-btn { padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: #1c1c1e; color: white; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .price-badge { background: #1a1a1c; color: var(--success); padding: 4px 8px; border-radius: 6px; font-size: 11px; border: 1px solid #333; }
     </style>
 </head>
 <body onload="app.init()">
@@ -56,43 +59,33 @@
 <div id="admin-panel" style="display:none;">
     <div class="top-nav"><button class="exit-btn" onclick="app.logout()">ÇIKIŞ / LOGOUT</button></div>
     <div class="container" style="display:block;">
-        <h2 id="txt-admin-title">Yönetim</h2>
-
+        
         <div class="card" style="border:1px solid var(--accent)">
-            <h4 id="txt-admin-scan">QR Seans Düş</h4>
-            <div id="admin-reader"></div>
+            <h4 id="txt-admin-scan">QR Seans Kontrol</h4>
+            <div id="admin-reader" style="width:100%; border-radius:15px; overflow:hidden; display:none; border:2px solid var(--accent);"></div>
             <button class="btn" onclick="app.startAdminScanner()">📷 Kamerayı Aç</button>
         </div>
 
         <div class="card">
-            <h4 id="txt-studio-info">İletişim & Senkronizasyon</h4>
-            <input type="text" id="conf-wp" placeholder="WhatsApp (905...)">
-            <input type="text" id="conf-ig" placeholder="Instagram Adı">
-            <input type="text" id="conf-tel" placeholder="Sabit Telefon">
-            <button class="btn" style="background:var(--success)" onclick="app.saveConfig()" id="txt-save-conf">Bilgileri Güncelle</button>
-        </div>
-
-        <div class="card" style="background: #1a1a1c;">
-            <h4 style="margin:0 0 10px 0; color:var(--accent);">💾 Veri Güvenliği</h4>
-            <p style="font-size:11px; color:var(--muted);">Cihaz değişikliği veya silinmeye karşı verilerinizi kopyalayıp saklayın.</p>
-            <button class="btn" style="padding:10px; font-size:12px; background:white;" onclick="app.exportData()">Veriyi Kopyala (Backup)</button>
-            <button class="btn" style="padding:10px; font-size:12px; background:var(--muted); color:white;" onclick="app.importData()">Veriyi Yükle (Restore)</button>
-        </div>
-
-        <div class="card">
-            <h4 id="txt-add-member">Üye Ekle</h4>
+            <h4 id="txt-add-member">Yeni Üye & Paket Tanımla</h4>
             <input type="text" id="mName" placeholder="Ad Soyad">
             <input type="tel" id="mPhone" placeholder="Telefon (Giriş Şifresi)">
-            <select id="mPack"><option value="8">8 Seans</option><option value="12">12 Seans</option></select>
-            <button class="btn" onclick="app.addMember()" id="txt-save">Kaydet</button>
+            <input type="number" id="mPack" placeholder="Seans Sayısı">
+            <input type="number" id="mPrice" placeholder="Ödenen Ücret (₺)">
+            <button class="btn" onclick="app.addMember()" id="txt-save">Üyeyi Kaydet</button>
         </div>
 
         <div id="admin-list"></div>
 
         <div class="card">
-            <h3 id="txt-cal-manage">Programı Yönet</h3>
+            <h3 id="txt-cal-manage">Tarih Bazlı Program</h3>
             <input type="date" id="admin-date-picker" onchange="app.renderSchedule()">
             <div id="admin-cal-grid" class="cal-grid"></div>
+        </div>
+
+        <div class="card" style="background: #1a1a1c;">
+            <button class="btn" style="background:white; font-size:11px;" onclick="app.exportData()">💾 Verileri Yedekle (Kopyala)</button>
+            <button class="btn" style="background:var(--muted); color:white; font-size:11px;" onclick="app.importData()">🔄 Verileri Geri Yükle</button>
         </div>
     </div>
 </div>
@@ -106,8 +99,7 @@
                 <h1 id="u-sess" style="font-size:70px; color:var(--accent); margin:0;">0</h1>
                 <p id="txt-rem-sess" style="color:var(--muted); font-size:12px;">KALAN SEANS</p>
             </div>
-            <div class="card"><h4 id="txt-rules-title">Kurallar</h4><p id="rules-content" style="font-size:13px; color:var(--muted);"></p></div>
-            <div class="card"><h4 id="txt-contact-studio">Bize Ulaşın</h4><div id="u-contact-area" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div></div>
+            <div class="card"><h4 id="txt-rules-title">Stüdyo Kuralları</h4><p id="rules-content" style="font-size:13px; color:var(--muted);"></p></div>
         </div>
         <div id="tab-cal" class="tab-content" style="display:none;">
             <h3 id="txt-nav-cal">Müsaitlik</h3>
@@ -120,20 +112,16 @@
 
 <script>
 const langData = {
-    tr: { welcome: "STUDIO PRO", btnAdmin: "👑 Yönetici Paneli", btnMember: "👤 Üye Girişi", gateTitle: "Giriş", btnLogin: "Giriş", btnBack: "Geri", remember: "Beni Hatırla", adminTitle: "Yönetim", adminScan: "QR Seans Düş", studioInfo: "İletişim Bilgileri", saveConf: "Güncelle", addMember: "Üye Ekle", save: "Kaydet", remSess: "KALAN SEANS", rulesTitle: "Kurallar", contactStudio: "İletişim", calManage: "Takvim Yönetimi", navHome: "Panel", navCal: "Takvim", free: "MÜSAİT", busy: "DOLU", rules: "• İptaller 6 saat önceden.<br>• Paket 30 gün geçerli.<br>• Temiz ayakkabı şart." },
-    en: { welcome: "STUDIO PRO", btnAdmin: "👑 Admin Panel", btnMember: "👤 Member Login", gateTitle: "Login", btnLogin: "Login", btnBack: "Back", remember: "Remember Me", adminTitle: "Management", adminScan: "QR Session", studioInfo: "Contact Info", saveConf: "Update", addMember: "Add Member", save: "Save", remSess: "REMAINING", rulesTitle: "Rules", contactStudio: "Contact", calManage: "Schedule", navHome: "Home", navCal: "Schedule", free: "FREE", busy: "BUSY", rules: "• 6h cancellation.<br>• 30-day limit.<br>• Clean shoes mandatory." }
+    tr: { welcome: "STUDIO PRO", btnAdmin: "👑 Yönetici Paneli", btnMember: "👤 Üye Girişi", gateTitle: "Giriş", btnLogin: "Giriş", btnBack: "Geri", remember: "Beni Hatırla", adminTitle: "Yönetim", adminScan: "QR Seans Kontrol", addMember: "Üye Ekle", save: "Kaydet", remSess: "KALAN SEANS", rulesTitle: "Kurallar", calManage: "Program", navHome: "Panel", navCal: "Takvim", free: "MÜSAİT", busy: "DOLU", rules: "• İptaller 6 saat önceden.<br>• Paket 30 gün geçerli.<br>• Temiz ayakkabı şart." },
+    en: { welcome: "STUDIO PRO", btnAdmin: "👑 Admin Panel", btnMember: "👤 Member Login", gateTitle: "Login", btnLogin: "Login", btnBack: "Back", remember: "Remember Me", adminTitle: "Management", adminScan: "QR Session", addMember: "Add Member", save: "Save", remSess: "REMAINING", rulesTitle: "Rules", calManage: "Schedule", navHome: "Home", navCal: "Schedule", free: "FREE", busy: "BUSY", rules: "• 6h cancellation.<br>• 30-day limit.<br>• Clean shoes mandatory." }
 };
 
 const app = {
-    db: { members: [], config: { wp: "", ig: "", tel: "" }, schedule: {} },
+    db: { members: [], schedule: {} },
 
     init() {
-        // VERİ YÜKLEME GARANTİSİ
-        const saved = localStorage.getItem('studio_v26');
-        if (saved) {
-            try { this.db = JSON.parse(saved); } catch(e) { console.error("Veri hatası"); }
-        }
-        
+        const saved = localStorage.getItem('studio_v27');
+        if (saved) { try { this.db = JSON.parse(saved); } catch(e) {} }
         ui.updateTexts();
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('admin-date-picker').value = today;
@@ -173,47 +161,41 @@ const app = {
         this.renderSchedule();
     },
 
-    save() { localStorage.setItem('studio_v26', JSON.stringify(this.db)); },
-
-    exportData() {
-        const data = JSON.stringify(this.db);
-        navigator.clipboard.writeText(data).then(() => alert("Tüm veriler panoya kopyalandı! Bir yere yapıştırıp saklayın."));
-    },
-
-    importData() {
-        const data = prompt("Daha önce kopyaladığınız veriyi buraya yapıştırın:");
-        if (data) {
-            try { 
-                this.db = JSON.parse(data); 
-                this.save(); 
-                alert("Veriler başarıyla yüklendi!"); 
-                location.reload(); 
-            } catch(e) { alert("Hatalı veri formatı!"); }
-        }
-    },
-
-    saveConfig() {
-        this.db.config.wp = document.getElementById('conf-wp').value;
-        this.db.config.ig = document.getElementById('conf-ig').value;
-        this.db.config.tel = document.getElementById('conf-tel').value;
-        this.save(); alert("Güncellendi!");
-    },
+    save() { localStorage.setItem('studio_v27', JSON.stringify(this.db)); },
 
     addMember() {
-        const n = document.getElementById('mName').value, p = document.getElementById('mPhone').value;
+        const n = document.getElementById('mName').value, p = document.getElementById('mPhone').value, s = document.getElementById('mPack').value, pr = document.getElementById('mPrice').value;
         if(!n || !p) return;
-        this.db.members.push({ id: Date.now(), name: n, phone: p, sessions: parseInt(document.getElementById('mPack').value) });
+        this.db.members.push({ id: Date.now(), name: n, phone: p, sessions: parseInt(s) || 0, price: pr || 0 });
         this.save(); this.renderAdmin();
+        document.getElementById('mName').value = ""; document.getElementById('mPhone').value = "";
+    },
+
+    editMember(id, field, val) {
+        const m = this.db.members.find(x => x.id == id);
+        if(m) {
+            if(field === 'sess') m.sessions += val;
+            if(field === 'price') m.price = val;
+            this.save(); this.renderAdmin();
+        }
     },
 
     renderAdmin() {
         const list = document.getElementById('admin-list'); list.innerHTML = "";
         this.db.members.forEach(m => {
-            list.innerHTML += `<div class="card"><b>${m.name}</b><br><small>${m.phone}</small>
-            <div style="display:flex; gap:10px; margin-top:10px;">
-                <button class="btn" style="margin:0; font-size:11px; background:var(--danger); color:white" onclick="app.dropSess(${m.id})">-1 Seans</button>
-                <button class="btn" style="margin:0; font-size:11px;" onclick="window.open('https://wa.me/${m.phone}')">WhatsApp</button>
-            </div></div>`;
+            list.innerHTML += `<div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div><b>${m.name}</b><br><small>${m.phone}</small></div>
+                    <div class="price-badge">${m.price} ₺</div>
+                </div>
+                <div style="margin-top:10px; font-size:14px; color:var(--accent);">Kalan Seans: <b>${m.sessions}</b></div>
+                <div class="member-controls">
+                    <button class="control-btn" onclick="app.editMember(${m.id}, 'sess', 1)">+1 Seans</button>
+                    <button class="control-btn" style="color:var(--danger)" onclick="app.editMember(${m.id}, 'sess', -1)">-1 Seans</button>
+                    <button class="control-btn" onclick="let p=prompt('Yeni Ücret:', ${m.price}); if(p) app.editMember(${m.id}, 'price', p)">Ücret Düzenle</button>
+                    <button class="control-btn" style="color:var(--danger)" onclick="if(confirm('Sil?')) { app.db.members = app.db.members.filter(x=>x.id!=${m.id}); app.save(); app.renderAdmin(); }">Üyeyi Sil</button>
+                </div>
+            </div>`;
         });
     },
 
@@ -221,17 +203,13 @@ const app = {
         document.getElementById('u-sess').innerText = this.user.sessions;
         document.getElementById('u-qr').innerHTML = "";
         new QRCode(document.getElementById("u-qr"), { text: "ID:" + this.user.id, width: 140, height: 140 });
-        const area = document.getElementById('u-contact-area'); area.innerHTML = "";
-        if(this.db.config.wp) area.innerHTML += `<button class="btn" onclick="window.open('https://wa.me/${this.db.config.wp}')">WhatsApp</button>`;
-        if(this.db.config.tel) area.innerHTML += `<button class="btn" onclick="location.href='tel:${this.db.config.tel}'">Telefon</button>`;
-        if(this.db.config.ig) area.innerHTML += `<button class="btn" style="background:#f09433" onclick="window.open('https://instagram.com/${this.db.config.ig}')">Instagram</button>`;
     },
 
     renderSchedule() {
         const date = ui.mode === 'admin' ? document.getElementById('admin-date-picker').value : document.getElementById('user-date-picker').value;
         const aGrid = document.getElementById('admin-cal-grid'), uGrid = document.getElementById('user-cal-grid');
         aGrid.innerHTML = uGrid.innerHTML = "";
-        for(let i=7; i<=20; i++){
+        for(let i=7; i<=21; i++){
             const t = i + ":00"; const key = date + "_" + t;
             const state = this.db.schedule[key] || "FREE";
             const label = ui.lang === 'tr' ? (state==='FREE'?'MÜSAİT':'DOLU') : state;
@@ -252,12 +230,20 @@ const app = {
         const sc = new Html5Qrcode("admin-reader");
         sc.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (text) => {
             const m = this.db.members.find(x => x.id == text.split("ID:")[1]);
-            if(m && m.sessions > 0) { m.sessions--; this.save(); this.renderAdmin(); alert(m.name + " -1"); }
+            if(m && m.sessions > 0) { m.sessions--; this.save(); this.renderAdmin(); alert(m.name + " -1 Seans"); }
             sc.stop(); r.style.display='none';
         });
     },
 
-    dropSess(id) { const m = this.db.members.find(x => x.id == id); if(m.sessions>0) { m.sessions--; this.save(); this.renderAdmin(); if(this.user && this.user.id == id) this.renderUser(); }},
+    exportData() {
+        navigator.clipboard.writeText(JSON.stringify(this.db)).then(() => alert("Yedek kopyalandı!"));
+    },
+
+    importData() {
+        const d = prompt("Veriyi yapıştırın:");
+        if(d) { try { this.db = JSON.parse(d); this.save(); location.reload(); } catch(e) { alert("Hata!"); } }
+    },
+
     logout() { localStorage.removeItem('sm_remember'); location.reload(); },
     switchTab(id, el) {
         document.querySelectorAll('.tab-content').forEach(t => t.style.display='none');
