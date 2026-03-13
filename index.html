@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>DiamondPro Mobile</title>
+<title>DiamondPro SaaS</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://unpkg.com/html5-qrcode"></script>
@@ -22,20 +20,20 @@ color:white;
 }
 
 header{
+background:#020617;
 padding:15px;
 text-align:center;
 font-size:20px;
-background:#020617;
 }
 
 .container{
-padding:10px;
+padding:15px;
 }
 
 .card{
 background:#1e293b;
 padding:15px;
-margin-bottom:12px;
+margin-bottom:15px;
 border-radius:12px;
 }
 
@@ -43,8 +41,8 @@ input{
 width:100%;
 padding:10px;
 margin-top:6px;
-border-radius:8px;
 border:none;
+border-radius:8px;
 }
 
 button{
@@ -55,7 +53,6 @@ border:none;
 border-radius:10px;
 background:#3b82f6;
 color:white;
-font-size:15px;
 }
 
 nav{
@@ -69,15 +66,7 @@ justify-content:space-around;
 padding:10px;
 }
 
-nav button{
-width:auto;
-background:none;
-font-size:14px;
-}
-
-.success{
-color:#22c55e;
-}
+.success{color:#22c55e;}
 
 </style>
 
@@ -85,9 +74,24 @@ color:#22c55e;
 
 <body>
 
-<header>
-💎 DiamondPro Mobile
-</header>
+<header>💎 DiamondPro</header>
+
+<div id="login" class="container">
+
+<div class="card">
+
+<h3>Yönetici Girişi</h3>
+
+<input id="user" placeholder="Kullanıcı">
+<input id="pass" type="password" placeholder="Şifre">
+
+<button onclick="login()">Giriş</button>
+
+</div>
+
+</div>
+
+<div id="app" style="display:none">
 
 <div class="container" id="home">
 
@@ -95,10 +99,21 @@ color:#22c55e;
 
 <h3>Yeni Öğrenci</h3>
 
-<input id="name" placeholder="Ad Soyad">
+<input id="name" placeholder="Ad">
 <input id="sessions" placeholder="Seans">
 
 <button onclick="addStudent()">Kaydet</button>
+
+</div>
+
+<div class="card">
+
+<h3>Ödeme</h3>
+
+<input id="payStudent" placeholder="Öğrenci ID">
+<input id="amount" placeholder="Tutar">
+
+<button onclick="addPayment()">Ödeme Kaydet</button>
 
 </div>
 
@@ -146,6 +161,8 @@ color:#22c55e;
 
 </div>
 
+</div>
+
 <nav>
 
 <button onclick="show('home')">🏠</button>
@@ -156,21 +173,39 @@ color:#22c55e;
 
 <script>
 
-let students = JSON.parse(localStorage.getItem("students")||"[]")
-let attendance = JSON.parse(localStorage.getItem("attendance")||"[]")
+let students=JSON.parse(localStorage.getItem("students")||"[]")
+let payments=JSON.parse(localStorage.getItem("payments")||"[]")
+let attendance=JSON.parse(localStorage.getItem("attendance")||"[]")
 
 function save(){
 
 localStorage.setItem("students",JSON.stringify(students))
+localStorage.setItem("payments",JSON.stringify(payments))
 localStorage.setItem("attendance",JSON.stringify(attendance))
+
+}
+
+function login(){
+
+if(
+document.getElementById("user").value=="admin" &&
+document.getElementById("pass").value=="1234"
+){
+
+document.getElementById("login").style.display="none"
+document.getElementById("app").style.display="block"
+
+}
 
 }
 
 function show(id){
 
-document.getElementById("home").style.display="none"
-document.getElementById("qr").style.display="none"
-document.getElementById("students").style.display="none"
+["home","qr","students"].forEach(x=>{
+
+document.getElementById(x).style.display="none"
+
+})
 
 document.getElementById(id).style.display="block"
 
@@ -202,14 +237,29 @@ students.forEach(s=>{
 
 list.innerHTML+=`
 <li>
-${s.name}
-(Seans:${s.sessions})
+${s.name} (Seans:${s.sessions})
 <br>
-QR: ${s.id}
+QR ID:${s.id}
 </li>
 `
 
 })
+
+}
+
+function addPayment(){
+
+payments.push({
+
+student:document.getElementById("payStudent").value,
+amount:Number(document.getElementById("amount").value),
+time:new Date()
+
+})
+
+save()
+
+updateChart()
 
 }
 
@@ -239,8 +289,10 @@ attendance.push({id,time:new Date()})
 
 save()
 
+renderStudents()
+
 document.getElementById("result").innerHTML=
-"<span class='success'>Giriş kaydedildi</span>"
+"<span class='success'>Seans düşüldü</span>"
 
 updateAI()
 
@@ -270,11 +322,19 @@ const chart=new Chart(ctx,{
 type:"bar",
 data:{
 labels:["Gelir"],
-datasets:[{
-data:[0]
-}]
+datasets:[{data:[0]}]
 }
 })
+
+function updateChart(){
+
+let total=payments.reduce((a,b)=>a+b.amount,0)
+
+chart.data.datasets[0].data=[total]
+
+chart.update()
+
+}
 
 const scanner=new Html5QrcodeScanner("reader",{fps:10})
 
@@ -285,11 +345,10 @@ checkin(Number(result))
 })
 
 renderStudents()
-
+updateChart()
 updateAI()
 
 </script>
 
 </body>
-
 </html>
