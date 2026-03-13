@@ -1,382 +1,313 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DiamondPro V40 | Professional Studio OS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://unpkg.com/html5-qrcode"></script>
-    <style>
-        :root { 
-            --bg: #030303; 
-            --surface: #121214; 
-            --accent: #d2fe00; 
-            --accent-muted: rgba(210, 254, 0, 0.15);
-            --text-main: #ffffff; 
-            --text-muted: #a1a1aa; 
-            --border: rgba(255, 255, 255, 0.08); 
-            --danger: #ff453a; 
-            --success: #32d74b; 
-            --warning: #ff9f0a; 
-        }
 
-        /* Ana Yapı */
-        html, body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            margin: 0; padding: 0;
-            min-height: 100vh;
-            width: 100%;
-            overflow-x: hidden;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
+<meta charset="UTF-8">
 
-        /* Cam Efekti Kartlar */
-        .card { 
-            background: var(--surface); 
-            border-radius: 20px; 
-            padding: 24px; 
-            margin-bottom: 20px; 
-            border: 1px solid var(--border);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-        }
+<title>DiamondPro SaaS</title>
 
-        /* Başlıklar */
-        h1, h2, h3, h4 { font-weight: 800; letter-spacing: -0.03em; margin: 0 0 15px 0; }
-        .accent-text { color: var(--accent); }
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
 
-        /* Modern Butonlar */
-        .btn { 
-            width: 100%; padding: 16px; border-radius: 12px; border: none; 
-            background: var(--accent); color: #000; font-weight: 700; 
-            cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            font-size: 14px;
-        }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(210, 254, 0, 0.3); }
-        .btn:active { transform: scale(0.97); }
-        .btn-secondary { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--border); }
-        .btn-danger { background: rgba(255, 69, 58, 0.1); color: var(--danger); border: 1px solid rgba(255, 69, 58, 0.2); }
+<style>
 
-        /* Inputlar */
-        input { 
-            width: 100%; padding: 14px 18px; border-radius: 12px; border: 1px solid var(--border); 
-            background: rgba(255,255,255,0.03); color: white; margin-bottom: 12px; outline: none; 
-            transition: border 0.2s; font-size: 14px;
-        }
-        input:focus { border-color: var(--accent); }
+body{
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont;
+background:#0f172a;
+color:white;
+}
 
-        /* Admin Dashboard İstatistikleri */
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .stat-box { background: var(--surface); padding: 16px; border-radius: 16px; border: 1px solid var(--border); }
-        .stat-val { font-size: 20px; font-weight: 800; color: var(--accent); }
-        .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+header{
+background:#020617;
+padding:20px;
+font-size:22px;
+}
 
-        /* Giriş Ekranı */
-        #auth-selection {
-            height: 100vh; width: 100%; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; padding: 40px;
-            background: radial-gradient(circle at top right, #1a1a00, #030303);
-            position: fixed; top: 0; left: 0; z-index: 100;
-        }
+.container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:20px;
+padding:20px;
+}
 
-        /* Navigasyon */
-        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(3,3,3,0.8); backdrop-filter: blur(10px); z-index: 1000; }
-        .logo { font-weight: 800; font-size: 18px; letter-spacing: -1px; }
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:14px;
+box-shadow:0 5px 20px rgba(0,0,0,.4);
+}
 
-        /* Üye Listesi Tasarımı */
-        .member-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid var(--border); }
-        .member-info b { font-size: 15px; display: block; }
-        .member-info span { font-size: 12px; color: var(--text-muted); }
-        .sess-badge { background: var(--accent-muted); color: var(--accent); padding: 4px 10px; border-radius: 8px; font-weight: 700; font-size: 13px; }
+button{
+background:#3b82f6;
+border:none;
+padding:10px;
+border-radius:8px;
+color:white;
+cursor:pointer;
+}
 
-        /* Modal */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 20px; }
+input{
+padding:8px;
+border-radius:6px;
+border:none;
+margin:5px;
+}
 
-        /* Alt Nav */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #000; border-top: 1px solid var(--border); display: none; padding: 15px 0 35px; justify-content: space-around; z-index: 5000; }
-        .nav-btn { color: var(--text-muted); font-size: 11px; font-weight: 600; text-align: center; opacity: 0.6; }
-        .nav-btn.active { color: var(--accent); opacity: 1; }
+.success{
+color:#22c55e;
+}
 
-        .warning-blink { animation: blinker 1.5s linear infinite; color: var(--warning) !important; }
-        @keyframes blinker { 50% { opacity: 0.3; } }
-    </style>
+</style>
+
 </head>
-<body onload="app.init()">
 
-<div id="auth-selection">
-    <div style="text-align: center; margin-bottom: 40px;">
-        <h1 style="font-size: 42px; margin: 0;">DIAMOND<span class="accent-text">PRO</span></h1>
-        <p style="color: var(--text-muted); font-size: 14px;">Stüdyo Yönetim İşletim Sistemi</p>
-    </div>
-    <div style="width: 100%; max-width: 320px; gap: 15px; display: flex; flex-direction: column;">
-        <button class="btn" onclick="ui.showGate('admin')">👑 Yönetici Girişi</button>
-        <button class="btn btn-secondary" onclick="ui.showGate('member')">👤 Üye Portalı</button>
-    </div>
+<body>
+
+<header>
+💎 DiamondPro SaaS Demo
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h3>Yeni Öğrenci</h3>
+
+<input id="name" placeholder="Ad">
+<input id="phone" placeholder="Telefon">
+<input id="sessions" placeholder="Seans">
+
+<button onclick="addStudent()">Ekle</button>
+
 </div>
 
-<div id="gate-page" class="modal" style="display:none; background: var(--bg);">
-    <div class="card" style="width: 100%; max-width: 380px;">
-        <h2 id="gate-title">Giriş</h2>
-        <input type="password" id="gate-input" placeholder="Telefon Numarası veya Şifre">
-        <label style="display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text-muted); margin: 10px 0 20px;">
-            <input type="checkbox" id="rememberMe" style="width:18px; margin:0"> Beni Hatırla
-        </label>
-        <button class="btn" onclick="app.processLogin()">Devam Et</button>
-        <button class="btn btn-secondary" onclick="ui.back()" style="margin-top:10px;">Geri</button>
-    </div>
+<div class="card">
+
+<h3>Ödeme Kaydı</h3>
+
+<input id="payStudent" placeholder="Öğrenci ID">
+<input id="amount" placeholder="Tutar">
+
+<button onclick="addPayment()">Ödeme Kaydet</button>
+
 </div>
 
-<div id="admin-panel" style="display:none;">
-    <div class="top-bar">
-        <div class="logo">DIAMOND<span class="accent-text">PRO</span></div>
-        <button class="exit-btn" onclick="app.logout()" style="background:none; border:none; color:var(--danger); font-weight:700;">Çıkış</button>
-    </div>
-    
-    <div class="container" style="padding: 20px; max-width: 600px; margin: 0 auto;">
-        
-        <div class="stat-grid">
-            <div class="stat-box">
-                <div class="stat-label">Aktif Üye</div>
-                <div class="stat-val" id="stat-members">0</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Toplam Ciro</div>
-                <div class="stat-val" id="stat-revenue">0₺</div>
-            </div>
-        </div>
+<div class="card">
 
-        <div class="card" style="border-color: var(--accent-muted);">
-            <h4 style="margin-bottom:10px">📢 Stüdyo Bağlantısı</h4>
-            <button class="btn btn-secondary" onclick="app.shareApp()">Uygulama Linkini Paylaş</button>
-        </div>
+<h3>Gelir Grafiği</h3>
 
-        <div class="card">
-            <h4>Finansal Takip</h4>
-            <div id="finance-summary" style="display:flex; justify-content: space-between; margin-bottom: 20px; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px;">
-                <span style="color:var(--text-muted)">Net Kâr: <b id="total-balance" style="color:var(--accent)">0₺</b></span>
-                <span style="color:var(--text-muted)">Giderler: <b id="total-expense" style="color:var(--danger)">0₺</b></span>
-            </div>
-            <input type="text" id="exp-desc" placeholder="Gider Başlığı">
-            <input type="number" id="exp-val" placeholder="Tutar ₺">
-            <button class="btn btn-secondary" onclick="app.addExpense()">Gideri Kaydet</button>
-        </div>
+<canvas id="chart"></canvas>
 
-        <div class="card" style="text-align:center;">
-            <h4>Check-in Karekod</h4>
-            <div id="admin-static-qr" style="background:#fff; padding:15px; display:inline-block; border-radius:12px; margin: 10px 0;"></div>
-            <p style="font-size:12px; color:var(--text-muted)">Üyeleriniz bu kodu okutarak giriş yapar.</p>
-        </div>
-
-        <div class="card">
-            <h4>Yeni Kayıt</h4>
-            <input type="text" id="mName" placeholder="Ad Soyad">
-            <input type="tel" id="mPhone" placeholder="Telefon (Giriş için)">
-            <input type="number" id="mPack" placeholder="Paket Seans Sayısı">
-            <input type="number" id="mPrice" placeholder="Tahsil Edilen Ücret ₺">
-            <button class="btn" onclick="app.addMember()">Üyeyi Oluştur</button>
-        </div>
-
-        <h3>Üyeler</h3>
-        <div id="admin-list" class="card" style="padding:0; overflow:hidden;"></div>
-    </div>
 </div>
 
-<div id="member-panel" style="display:none;">
-    <div class="top-bar">
-        <div class="logo">ÜYE<span class="accent-text">PORTALI</span></div>
-        <button onclick="app.logout()" style="background:none; border:none; color:var(--danger); font-weight:700;">Ayrıl</button>
-    </div>
-    <div class="container" style="padding: 20px; max-width: 600px; margin: 0 auto;">
-        <div class="card" style="text-align:center; padding: 40px 20px;">
-            <div class="stat-label">KALAN SEANSINIZ</div>
-            <div id="u-sess" style="font-size: 100px; font-weight: 800; line-height: 1; margin: 20px 0;">0</div>
-            <div id="member-reader" style="width:100%; border-radius:16px; overflow:hidden; display:none; border:2px solid var(--accent); margin-bottom:20px;"></div>
-            <button class="btn" id="cam-btn" onclick="app.startMemberScanner()">📷 GİRİŞ YAP (QR OKUT)</button>
-        </div>
+<div class="card">
 
-        <div class="card">
-            <h4>Stüdyo Bilgileri</h4>
-            <div id="u-contact" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
-        </div>
-    </div>
+<h3>QR Check-in</h3>
+
+<div id="reader" style="width:300px"></div>
+
+<div id="checkResult"></div>
+
 </div>
 
-<div id="log-modal" class="modal">
-    <div class="card" style="width: 100%; max-width: 400px; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column;">
-        <h3 id="modal-title">İşlem Geçmişi</h3>
-        <div id="log-list" style="overflow-y: auto; flex: 1; margin-bottom: 20px;"></div>
-        <button class="btn" onclick="ui.closeLogs()" style="background:var(--danger); color:#fff">Kapat</button>
-    </div>
+<div class="card">
+
+<h3>AI Analiz</h3>
+
+<div id="ai"></div>
+
+</div>
+
+<div class="card">
+
+<h3>Öğrenciler</h3>
+
+<ul id="students"></ul>
+
+</div>
+
 </div>
 
 <script>
-const app = {
-    db: { members: [], config: { wp: "905...", ig: "" }, expenses: [] },
-    user: null,
 
-    init() {
-        const saved = localStorage.getItem('diamond_pro_v40');
-        if (saved) this.db = JSON.parse(saved);
-        this.checkRemember();
-        this.updateFinance();
-    },
+let students = JSON.parse(localStorage.getItem("students")||"[]")
+let payments = JSON.parse(localStorage.getItem("payments")||"[]")
+let attendance = JSON.parse(localStorage.getItem("attendance")||"[]")
 
-    save() { localStorage.setItem('diamond_pro_v40', JSON.stringify(this.db)); },
+function save(){
 
-    checkRemember() {
-        const saved = localStorage.getItem('dp_auth');
-        if(saved) {
-            const d = JSON.parse(saved);
-            if(d.mode === 'admin' && d.val === "1234") this.loadPanel('admin-panel');
-            else { 
-                const m = this.db.members.find(u => u.phone === d.val); 
-                if(m) { this.user = m; this.loadPanel('member-panel'); } 
-            }
-        }
-    },
+localStorage.setItem("students",JSON.stringify(students))
+localStorage.setItem("payments",JSON.stringify(payments))
+localStorage.setItem("attendance",JSON.stringify(attendance))
 
-    processLogin() {
-        const val = document.getElementById('gate-input').value;
-        const rem = document.getElementById('rememberMe').checked;
-        if(ui.mode === 'admin' && val === "1234") {
-            if(rem) localStorage.setItem('dp_auth', JSON.stringify({val, mode:'admin'}));
-            this.loadPanel('admin-panel');
-        } else {
-            const m = this.db.members.find(u => u.phone === val);
-            if(m) {
-                if(rem) localStorage.setItem('dp_auth', JSON.stringify({val, mode:'member'}));
-                this.user = m; this.loadPanel('member-panel');
-            } else alert("Geçersiz giriş bilgisi!");
-        }
-    },
+}
 
-    loadPanel(id) {
-        document.getElementById('auth-selection').style.display='none';
-        document.getElementById('gate-page').style.display='none';
-        document.getElementById(id).style.display='block';
-        if(id === 'admin-panel') {
-            this.renderAdmin();
-            this.genQR();
-        } else {
-            this.renderUser();
-        }
-    },
+function renderStudents(){
 
-    genQR() {
-        const container = document.getElementById('admin-static-qr');
-        container.innerHTML = "";
-        new QRCode(container, { text: "DIAMOND_CHECKIN", width: 180, height: 180, colorDark : "#000000", colorLight : "#ffffff" });
-    },
+const list=document.getElementById("students")
 
-    addMember() {
-        const n = document.getElementById('mName').value, p = document.getElementById('mPhone').value;
-        const s = parseInt(document.getElementById('mPack').value), pr = parseFloat(document.getElementById('mPrice').value);
-        if(!n || !p) return;
-        this.db.members.push({ id: Date.now(), name: n, phone: p, sessions: s||0, price: pr||0, logs: [{date: new Date().toLocaleDateString(), time: 'Kayıt', action: 'Paket Tanımlandı'}] });
-        this.save(); this.renderAdmin(); this.updateFinance();
-        document.getElementById('mName').value = ""; document.getElementById('mPhone').value = "";
-    },
+list.innerHTML=""
 
-    renderAdmin() {
-        const list = document.getElementById('admin-list'); list.innerHTML = "";
-        document.getElementById('stat-members').innerText = this.db.members.length;
-        this.db.members.forEach(m => {
-            const isCritical = m.sessions <= 2;
-            list.innerHTML += `
-                <div class="member-item">
-                    <div class="member-info">
-                        <b style="${m.sessions === 0 ? 'color:var(--danger)' : ''}">${m.name}</b>
-                        <span>${m.phone}</span>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <span class="sess-badge ${isCritical && m.sessions>0 ? 'warning-blink' : ''}">${m.sessions} Seans</span>
-                        <button onclick="app.showLogs(${m.id})" style="background:none; border:none; cursor:pointer;">📋</button>
-                        <button onclick="app.deleteMember(${m.id})" style="background:none; border:none; cursor:pointer;">🗑️</button>
-                    </div>
-                </div>`;
-        });
-    },
+students.forEach(s=>{
 
-    showLogs(id) {
-        const user = this.db.members.find(m => m.id === id);
-        document.getElementById('modal-title').innerText = user.name;
-        const logList = document.getElementById('log-list');
-        logList.innerHTML = user.logs.reverse().map(l => `
-            <div style="padding:12px; border-bottom:1px solid var(--border); font-size:13px;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                    <b color="var(--accent)">${l.action}</b>
-                    <span style="color:var(--text-muted)">${l.date}</span>
-                </div>
-                <div style="font-size:11px; opacity:0.6">${l.time}</div>
-            </div>
-        `).join('');
-        document.getElementById('log-modal').style.display = 'flex';
-    },
+list.innerHTML+=`
+<li>
 
-    renderUser() {
-        const sessEl = document.getElementById('u-sess');
-        const count = this.user.sessions;
-        sessEl.innerText = count;
-        sessEl.style.color = count === 0 ? 'var(--danger)' : (count <= 2 ? 'var(--warning)' : 'var(--accent)');
-        
-        const contact = document.getElementById('u-contact');
-        contact.innerHTML = `<button class="btn btn-secondary" onclick="window.open('https://wa.me/${this.db.config.wp}')">WhatsApp</button>
-                             <button class="btn btn-secondary" onclick="location.reload()">Yenile</button>`;
-    },
+ID:${s.id}
+${s.name}
+Seans:${s.sessions}
 
-    startMemberScanner() {
-        if(this.user.sessions <= 0) { alert("Seansınız kalmadı. Lütfen stüdyo ile iletişime geçin."); return; }
-        const r = document.getElementById('member-reader'); r.style.display='block';
-        const sc = new Html5Qrcode("member-reader");
-        sc.start({ facingMode: "environment" }, { fps: 15, qrbox: 250 }, (text) => {
-            if(text === "DIAMOND_CHECKIN") {
-                this.user.sessions--;
-                const now = new Date();
-                this.user.logs.push({ date: now.toLocaleDateString(), time: now.toLocaleTimeString(), action: 'QR Giriş' });
-                this.save(); this.renderUser(); 
-                alert("Giriş Onaylandı! Seansınız düşüldü.");
-            }
-            sc.stop(); r.style.display='none';
-        }).catch(e => alert("Kamera Hatası!"));
-    },
+</li>
+`
 
-    updateFinance() {
-        const inc = this.db.members.reduce((a, m) => a + (m.price || 0), 0);
-        const exp = this.db.expenses.reduce((a, e) => a + (e.val || 0), 0);
-        document.getElementById('stat-revenue').innerText = inc + "₺";
-        document.getElementById('total-expense').innerText = exp + "₺";
-        document.getElementById('total-balance').innerText = (inc - exp) + "₺";
-    },
+})
 
-    addExpense() {
-        const d = document.getElementById('exp-desc').value, v = parseFloat(document.getElementById('exp-val').value);
-        if(!d || !v) return;
-        this.db.expenses.push({ desc: d, val: v, date: new Date().toLocaleDateString() });
-        this.save(); this.updateFinance();
-        document.getElementById('exp-desc').value = ""; document.getElementById('exp-val').value = "";
-    },
+}
 
-    shareApp() {
-        if (navigator.share) {
-            navigator.share({ title: 'DiamondPro Studio', text: 'Stüdyo takip uygulamamıza buradan ulaşabilirsiniz:', url: window.location.href });
-        } else {
-            navigator.clipboard.writeText(window.location.href); alert("Bağlantı kopyalandı!");
-        }
-    },
+function addStudent(){
 
-    deleteMember(id) { if(confirm('Bu üyeyi ve tüm geçmişini silmek istediğinize emin misiniz?')) { this.db.members = this.db.members.filter(x=>x.id!==id); this.save(); this.renderAdmin(); this.updateFinance(); }},
-    logout() { localStorage.removeItem('dp_auth'); location.reload(); }
-};
+let student={
 
-const ui = {
-    mode: '',
-    showGate(m) { this.mode = m; document.getElementById('gate-title').innerText = m === 'admin' ? 'Yönetici Girişi' : 'Üye Girişi'; document.getElementById('gate-page').style.display='flex'; },
-    back() { document.getElementById('gate-page').style.display='none'; },
-    closeLogs() { document.getElementById('log-modal').style.display = 'none'; }
-};
+id:Date.now(),
+
+name:document.getElementById("name").value,
+
+phone:document.getElementById("phone").value,
+
+sessions:Number(document.getElementById("sessions").value)
+
+}
+
+students.push(student)
+
+save()
+
+renderStudents()
+
+}
+
+function addPayment(){
+
+payments.push({
+
+student:document.getElementById("payStudent").value,
+
+amount:Number(document.getElementById("amount").value),
+
+date:new Date()
+
+})
+
+save()
+
+updateChart()
+
+}
+
+function checkin(studentId){
+
+let student=students.find(s=>s.id==studentId)
+
+if(!student){
+
+document.getElementById("checkResult").innerHTML="Öğrenci bulunamadı"
+
+return
+
+}
+
+if(student.sessions<=0){
+
+document.getElementById("checkResult").innerHTML="Seans bitmiş"
+
+return
+
+}
+
+student.sessions--
+
+attendance.push({
+
+student:studentId,
+
+time:new Date()
+
+})
+
+save()
+
+renderStudents()
+
+document.getElementById("checkResult").innerHTML=
+"<span class='success'>Seans düşüldü</span>"
+
+updateAI()
+
+}
+
+function updateChart(){
+
+let total = payments.reduce((a,b)=>a+b.amount,0)
+
+chart.data.datasets[0].data=[total]
+
+chart.update()
+
+}
+
+const ctx=document.getElementById("chart")
+
+const chart=new Chart(ctx,{
+
+type:"bar",
+
+data:{
+labels:["Gelir"],
+datasets:[{
+label:"Toplam",
+data:[0]
+}]
+}
+
+})
+
+function updateAI(){
+
+let hours={}
+
+attendance.forEach(a=>{
+
+let h=new Date(a.time).getHours()
+
+hours[h]=(hours[h]||0)+1
+
+})
+
+let busiest=Object.keys(hours).reduce((a,b)=>hours[a]>hours[b]?a:b,0)
+
+document.getElementById("ai").innerHTML=
+"En yoğun saat: "+busiest+":00"
+
+}
+
+const scanner=new Html5QrcodeScanner("reader",{fps:10})
+
+scanner.render((result)=>{
+
+checkin(Number(result))
+
+})
+
+renderStudents()
+
+updateChart()
+
+updateAI()
+
 </script>
+
 </body>
+
 </html>
