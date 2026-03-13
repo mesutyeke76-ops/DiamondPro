@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Studio Pro V28</title>
+    <title>Studio Pro V29</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -21,9 +21,12 @@
         .nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10,10,12,0.95); backdrop-filter: blur(20px); display: none; justify-content: space-around; padding: 15px 0 35px; border-top: 1px solid var(--border); z-index: 5000; }
         .nav-item { color: var(--muted); font-size: 10px; text-align: center; flex: 1; cursor: pointer; font-weight: 600; }
         .nav-item.active { color: var(--accent); }
-        .cal-grid { display: grid; grid-template-columns: 80px 1fr; gap: 8px; }
-        .cal-slot { padding: 12px; border-radius: 10px; background: #1a1a1c; font-size: 13px; text-align: center; cursor: pointer; }
-        .slot-free { color: var(--success); } .slot-busy { color: var(--danger); font-weight: 800; }
+        
+        /* Finance Table */
+        .f-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; text-align: center; }
+        .f-val { font-size: 16px; font-weight: 800; }
+        .cal-slot { padding: 12px; border-radius: 10px; background: #1a1a1c; font-size: 13px; text-align: center; cursor: pointer; border: 1px solid transparent; }
+        .slot-free { color: var(--success); } .slot-busy { color: var(--danger); font-weight: 800; border-color: var(--danger); }
     </style>
 </head>
 <body onload="app.init()">
@@ -52,18 +55,28 @@
     <div class="top-nav"><button class="exit-btn" onclick="app.logout()">ÇIKIŞ / LOGOUT</button></div>
     <div class="container" style="display:block;">
         
+        <div class="card">
+            <h4 id="txt-finTitle">Finansal Özet</h4>
+            <div class="f-grid">
+                <div><small id="txt-income">Gelir</small><div class="f-val" style="color:var(--success)" id="total-income">0₺</div></div>
+                <div><small id="txt-expense">Gider</small><div class="f-val" style="color:var(--danger)" id="total-expense">0₺</div></div>
+                <div><small id="txt-balance">Net</small><div class="f-val" style="color:var(--accent)" id="total-balance">0₺</div></div>
+            </div>
+            <input type="text" id="exp-desc" placeholder="Gider Açıklaması">
+            <input type="number" id="exp-val" placeholder="Tutar (₺)">
+            <button class="btn" style="background:var(--card); color:white; border:1px solid var(--border)" onclick="app.addExpense()">Gider Ekle</button>
+        </div>
+
         <div class="card" style="text-align:center; border: 2px solid var(--accent)">
-            <h4 id="txt-adminScan">Stüdyo Giriş QR</h4>
+            <h4 id="txt-adminScan">Giriş QR</h4>
             <div id="admin-static-qr" style="background:white; padding:10px; display:inline-block; border-radius:15px; margin:10px 0;"></div>
-            <p style="font-size:11px; color:var(--muted)">Üyeler bu QR'ı okutarak seans düşer.</p>
         </div>
 
         <div class="card">
-            <h4 id="txt-studioInfo">İletişim Bilgileri</h4>
+            <h4 id="txt-studioInfo">İletişim Ayarları</h4>
             <input type="text" id="conf-wp" placeholder="WhatsApp (905...)">
-            <input type="text" id="conf-ig" placeholder="Instagram Kullanıcı Adı">
-            <input type="text" id="conf-tel" placeholder="Sabit Telefon">
-            <button class="btn" style="background:var(--success)" onclick="app.saveConfig()" id="txt-saveConf">Bilgileri Güncelle</button>
+            <input type="text" id="conf-ig" placeholder="Instagram (Kullanıcı Adı)">
+            <button class="btn" style="background:var(--success)" onclick="app.saveConfig()" id="txt-saveConf">Senkronize Et</button>
         </div>
 
         <div class="card">
@@ -71,19 +84,17 @@
             <input type="text" id="mName" placeholder="Ad Soyad">
             <input type="tel" id="mPhone" placeholder="Telefon">
             <input type="number" id="mPack" placeholder="Seans">
-            <input type="number" id="mPrice" placeholder="Ücret (₺)">
+            <input type="number" id="mPrice" placeholder="Ödenen Ücret (₺)">
             <button class="btn" onclick="app.addMember()" id="txt-save">Kaydet</button>
         </div>
 
         <div id="admin-list"></div>
 
         <div class="card">
-            <h3 id="txt-calManage">Programı Yönet</h3>
+            <h3 id="txt-calManage">Program</h3>
             <input type="date" id="admin-date-picker" onchange="app.renderSchedule()">
-            <div id="admin-cal-grid" class="cal-grid"></div>
+            <div id="admin-cal-grid" style="display:grid; grid-template-columns:80px 1fr; gap:8px;"></div>
         </div>
-
-        <button class="btn" style="background:white; font-size:11px;" onclick="app.exportData()">💾 Veri Yedekle (Kopyala)</button>
     </div>
 </div>
 
@@ -94,17 +105,13 @@
             <div class="card" style="text-align:center;">
                 <h1 id="u-sess" style="font-size:70px; color:var(--accent); margin:0;">0</h1>
                 <p id="txt-remSess" style="color:var(--muted); font-size:12px;">KALAN SEANS</p>
-                
                 <div id="member-reader" style="width:100%; border-radius:20px; overflow:hidden; display:none; border:2px solid var(--accent); margin:15px 0;"></div>
-                <button class="btn" onclick="app.startMemberScanner()" id="txt-btnCam">📷 Giriş Yap (QR Okut)</button>
+                <button class="btn" onclick="app.startMemberScanner()" id="txt-btnCam">📷 QR Okut ve Gir</button>
             </div>
-
-            <div class="card"><h4 id="txt-contactStudio">İletişim</h4><div id="u-contact-area" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div></div>
-            <div class="card"><h4 id="txt-rulesTitle">Kurallar</h4><p id="rules-content" style="font-size:12px; color:var(--muted);"></p></div>
+            <div class="card"><h4 id="txt-contactStudio">Bize Ulaşın</h4><div id="u-contact-area" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div></div>
         </div>
-
         <div id="tab-cal" class="tab-content" style="display:none;">
-            <div class="card"><input type="date" id="user-date-picker" onchange="app.renderSchedule()"><div id="user-cal-grid" class="cal-grid"></div></div>
+            <div class="card"><input type="date" id="user-date-picker" onchange="app.renderSchedule()"><div id="user-cal-grid" style="display:grid; grid-template-columns:80px 1fr; gap:8px;"></div></div>
         </div>
     </div>
 </div>
@@ -116,26 +123,24 @@
 
 <script>
 const langData = {
-    tr: { gateTitle: "Giriş", btnLogin: "Giriş Yap", remember: "Beni Hatırla", adminScan: "Stüdyo Giriş QR", studioInfo: "İletişim Bilgileri", saveConf: "Güncelle", addMember: "Üye Ekle", save: "Kaydet", remSess: "KALAN SEANS", btnCam: "📷 Giriş Yap (QR Okut)", contactStudio: "İletişim", rulesTitle: "Kurallar", calManage: "Program", navHome: "Panel", navCal: "Takvim", free: "MÜSAİT", busy: "DOLU", rules: "• İptaller 6 saat önceden.<br>• Paket 30 gün geçerli.<br>• Temiz ayakkabı şart." },
-    en: { gateTitle: "Login", btnLogin: "Login", remember: "Remember Me", adminScan: "Studio Entry QR", studioInfo: "Contact Info", saveConf: "Update", addMember: "Add Member", save: "Save", remSess: "REMAINING", btnCam: "📷 Check-in (Scan QR)", contactStudio: "Contact", rulesTitle: "Rules", calManage: "Schedule", navHome: "Home", navCal: "Schedule", free: "FREE", busy: "BUSY", rules: "• 6h cancellation.<br>• 30-day limit.<br>• Clean shoes mandatory." }
+    tr: { gateTitle: "Giriş", btnLogin: "Giriş Yap", remember: "Beni Hatırla", finTitle: "Finansal Özet", income: "Gelir", expense: "Gider", balance: "Net", adminScan: "Giriş QR", studioInfo: "İletişim Ayarları", saveConf: "Senkronize Et", addMember: "Üye Ekle", save: "Kaydet", remSess: "KALAN SEANS", btnCam: "📷 QR Okut ve Gir", contactStudio: "Bize Ulaşın", calManage: "Program", navHome: "Panel", navCal: "Takvim", free: "MÜSAİT", busy: "DOLU" },
+    en: { gateTitle: "Login", btnLogin: "Login", remember: "Remember Me", finTitle: "Financial Summary", income: "Income", expense: "Expense", balance: "Net", adminScan: "Check-in QR", studioInfo: "Contact Settings", saveConf: "Sync Now", addMember: "Add Member", save: "Save", remSess: "REMAINING", btnCam: "📷 Scan QR & Enter", contactStudio: "Contact Us", calManage: "Schedule", navHome: "Home", navCal: "Schedule", free: "FREE", busy: "BUSY" }
 };
 
 const app = {
-    db: { members: [], config: { wp: "", ig: "", tel: "" }, schedule: {} },
+    db: { members: [], config: { wp: "", ig: "" }, schedule: {}, expenses: [] },
     user: null,
 
     init() {
-        const saved = localStorage.getItem('studio_v28');
+        const saved = localStorage.getItem('studio_v29');
         if (saved) this.db = JSON.parse(saved);
-        
         ui.lang = localStorage.getItem('studio_lang') || 'tr';
         ui.updateTexts();
-        
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('admin-date-picker').value = today;
         document.getElementById('user-date-picker').value = today;
-        
         this.checkRemember();
+        this.updateFinance();
     },
 
     checkRemember() {
@@ -168,10 +173,9 @@ const app = {
         if(id==='admin-panel') {
             this.renderAdmin();
             document.getElementById('admin-static-qr').innerHTML = "";
-            new QRCode(document.getElementById("admin-static-qr"), { text: "STUDIO_CHECKIN", width: 180, height: 180 });
+            new QRCode(document.getElementById("admin-static-qr"), { text: "STUDIO_CHECKIN", width: 160, height: 160 });
             document.getElementById('conf-wp').value = this.db.config.wp || "";
             document.getElementById('conf-ig').value = this.db.config.ig || "";
-            document.getElementById('conf-tel').value = this.db.config.tel || "";
         } else {
             document.getElementById('member-nav').style.display='flex';
             this.renderUser();
@@ -179,18 +183,35 @@ const app = {
         this.renderSchedule();
     },
 
-    saveConfig() {
-        this.db.config.wp = document.getElementById('conf-wp').value;
-        this.db.config.ig = document.getElementById('conf-ig').value;
-        this.db.config.tel = document.getElementById('conf-tel').value;
-        this.save(); alert("Bilgiler Kaydedildi!");
-    },
-
     addMember() {
         const n = document.getElementById('mName').value, p = document.getElementById('mPhone').value;
         if(!n || !p) return;
-        this.db.members.push({ id: Date.now(), name: n, phone: p, sessions: parseInt(document.getElementById('mPack').value)||0, price: document.getElementById('mPrice').value||0 });
-        this.save(); this.renderAdmin();
+        this.db.members.push({ id: Date.now(), name: n, phone: p, sessions: parseInt(document.getElementById('mPack').value)||0, price: parseFloat(document.getElementById('mPrice').value)||0 });
+        this.save(); this.renderAdmin(); this.updateFinance();
+        document.getElementById('mName').value = ""; document.getElementById('mPhone').value = "";
+    },
+
+    addExpense() {
+        const d = document.getElementById('exp-desc').value, v = parseFloat(document.getElementById('exp-val').value);
+        if(!d || !v) return;
+        this.db.expenses.push({ desc: d, val: v, date: new Date().toISOString() });
+        this.save(); this.updateFinance();
+        document.getElementById('exp-desc').value = ""; document.getElementById('exp-val').value = "";
+        alert("Gider eklendi.");
+    },
+
+    updateFinance() {
+        const income = this.db.members.reduce((acc, m) => acc + (parseFloat(m.price) || 0), 0);
+        const expense = this.db.expenses.reduce((acc, e) => acc + (parseFloat(e.val) || 0), 0);
+        document.getElementById('total-income').innerText = income + "₺";
+        document.getElementById('total-expense').innerText = expense + "₺";
+        document.getElementById('total-balance').innerText = (income - expense) + "₺";
+    },
+
+    saveConfig() {
+        this.db.config.wp = document.getElementById('conf-wp').value;
+        this.db.config.ig = document.getElementById('conf-ig').value;
+        this.save(); alert("Senkronize edildi!");
     },
 
     renderAdmin() {
@@ -208,7 +229,7 @@ const app = {
         document.getElementById('u-sess').innerText = this.user.sessions;
         const area = document.getElementById('u-contact-area'); area.innerHTML = "";
         if(this.db.config.wp) area.innerHTML += `<button class="btn" onclick="window.open('https://wa.me/${this.db.config.wp}')">WhatsApp</button>`;
-        if(this.db.config.ig) area.innerHTML += `<button class="btn" style="background:#f09433" onclick="window.open('https://instagram.com/${this.db.config.ig}')">Instagram</button>`;
+        if(this.db.config.ig) area.innerHTML += `<button class="btn" style="background:linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)" onclick="window.open('https://instagram.com/${this.db.config.ig}')">Instagram</button>`;
     },
 
     startMemberScanner() {
@@ -217,19 +238,17 @@ const app = {
         sc.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (text) => {
             if(text === "STUDIO_CHECKIN") {
                 if(this.user.sessions > 0) {
-                    this.user.sessions--; this.save(); this.renderUser();
-                    alert("Giriş Başarılı! -1 Seans");
-                } else alert("Seansınız kalmadı!");
+                    this.user.sessions--; this.save(); this.renderUser(); alert("Giriş Başarılı! -1 Seans");
+                } else alert("Seans bitti!");
             }
             sc.stop(); r.style.display='none';
-        }).catch(err => alert("Kamera hatası!"));
+        }).catch(() => alert("Kamera Hatası!"));
     },
 
     renderSchedule() {
         const date = ui.mode==='admin'?document.getElementById('admin-date-picker').value:document.getElementById('user-date-picker').value;
         const aGrid = document.getElementById('admin-cal-grid'), uGrid = document.getElementById('user-cal-grid');
-        if(!aGrid || !uGrid) return;
-        aGrid.innerHTML = uGrid.innerHTML = "";
+        if(!aGrid || !uGrid) return; aGrid.innerHTML = uGrid.innerHTML = "";
         for(let i=7; i<=21; i++){
             const t = i+":00"; const key = date+"_"+t; const state = this.db.schedule[key]||"FREE";
             const label = ui.lang==='tr'?(state==='FREE'?'MÜSAİT':'DOLU'):state;
@@ -241,16 +260,10 @@ const app = {
         });
     },
 
-    deleteMember(id) { if(confirm('Emin misiniz?')) { this.db.members = this.db.members.filter(x=>x.id!==id); this.save(); this.renderAdmin(); }},
-    save() { localStorage.setItem('studio_v28', JSON.stringify(this.db)); },
-    exportData() { navigator.clipboard.writeText(JSON.stringify(this.db)).then(()=>alert("Kopyalandı!")); },
+    deleteMember(id) { if(confirm('Silinsin mi?')) { this.db.members = this.db.members.filter(x=>x.id!==id); this.save(); this.renderAdmin(); this.updateFinance(); }},
+    save() { localStorage.setItem('studio_v29', JSON.stringify(this.db)); },
     logout() { localStorage.removeItem('sm_remember'); location.reload(); },
-    switchTab(id, el) { 
-        document.querySelectorAll('.tab-content').forEach(t=>t.style.display='none'); 
-        document.getElementById(id).style.display='block'; 
-        document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); 
-        el.classList.add('active'); this.renderSchedule(); 
-    }
+    switchTab(id, el) { document.querySelectorAll('.tab-content').forEach(t=>t.style.display='none'); document.getElementById(id).style.display='block'; document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); this.renderSchedule(); }
 };
 
 const ui = {
@@ -258,21 +271,12 @@ const ui = {
     showGate(m) { this.mode=m; document.getElementById('auth-selection').style.display='none'; document.getElementById('gate-page').style.display='flex'; },
     back() { document.getElementById('gate-page').style.display='none'; document.getElementById('auth-selection').style.display='flex'; },
     toggleLang() { 
-        this.lang = this.lang==='tr'?'en':'tr'; 
-        localStorage.setItem('studio_lang', this.lang);
-        document.getElementById('langBtn').innerText=this.lang.toUpperCase(); 
-        this.updateTexts(); app.renderSchedule(); 
+        this.lang = this.lang==='tr'?'en':'tr'; localStorage.setItem('studio_lang', this.lang);
+        document.getElementById('langBtn').innerText=this.lang.toUpperCase(); this.updateTexts(); app.renderSchedule(); 
     },
     updateTexts() {
         const d = langData[this.lang];
-        for(let key in d) { 
-            const el = document.getElementById('txt-'+key); 
-            if(el) {
-                if(el.tagName === 'INPUT') el.placeholder = d[key];
-                else el.innerHTML = d[key];
-            }
-        }
-        document.getElementById('rules-content').innerHTML = d.rules;
+        for(let key in d) { const el = document.getElementById('txt-'+key); if(el) { if(el.tagName === 'INPUT') el.placeholder = d[key]; else el.innerHTML = d[key]; } }
     }
 };
 </script>
