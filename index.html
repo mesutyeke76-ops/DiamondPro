@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Studio Pro V29</title>
+    <title>Studio Pro V30</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -14,17 +14,16 @@
         .top-nav { display: flex; justify-content: center; padding: 15px; position: sticky; top: 0; z-index: 9000; background: var(--bg); border-bottom: 1px solid var(--border); }
         .exit-btn { background: var(--danger); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 800; font-size: 11px; cursor: pointer; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; display: none; }
-        .card { background: var(--card); border-radius: 24px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .card { background: var(--card); border-radius: 24px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); position: relative; }
         .btn { width: 100%; padding: 14px; border-radius: 12px; border: none; background: var(--accent); color: black; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
-        input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: #1a1a1c; color: white; margin-bottom: 10px; outline: none; }
+        input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--border); background: #1a1a1c; color: white; margin-bottom: 10px; outline: none; }
+        .input-group { position: relative; width: 100%; }
+        .eye-btn { position: absolute; right: 15px; top: 15px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; z-index: 5; }
         .lang-switch { position: fixed; top: 15px; right: 15px; z-index: 10001; background: var(--accent); color: black; padding: 8px 12px; border-radius: 10px; font-weight: 800; cursor: pointer; border: none; font-size: 11px; }
         .nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10,10,12,0.95); backdrop-filter: blur(20px); display: none; justify-content: space-around; padding: 15px 0 35px; border-top: 1px solid var(--border); z-index: 5000; }
         .nav-item { color: var(--muted); font-size: 10px; text-align: center; flex: 1; cursor: pointer; font-weight: 600; }
         .nav-item.active { color: var(--accent); }
-        
-        /* Finance Table */
         .f-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; text-align: center; }
-        .f-val { font-size: 16px; font-weight: 800; }
         .cal-slot { padding: 12px; border-radius: 10px; background: #1a1a1c; font-size: 13px; text-align: center; cursor: pointer; border: 1px solid transparent; }
         .slot-free { color: var(--success); } .slot-busy { color: var(--danger); font-weight: 800; border-color: var(--danger); }
     </style>
@@ -34,64 +33,68 @@
 <button class="lang-switch" onclick="ui.toggleLang()" id="langBtn">EN</button>
 
 <div id="auth-selection" style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px;">
-    <h1>STUDIO PRO</h1>
+    <h1 style="letter-spacing: -1px; font-weight: 800;">STUDIO PRO</h1>
     <button class="btn" onclick="ui.showGate('admin')">👑 Yönetici Paneli</button>
     <button class="btn" style="background:var(--card); color:white; border:1px solid var(--border)" onclick="ui.showGate('member')">👤 Üye Girişi</button>
 </div>
 
 <div id="gate-page" style="position:fixed; inset:0; background:var(--bg); z-index:10000; display:none; flex-direction:column; align-items:center; justify-content:center; padding:20px;">
     <div class="card" style="max-width:380px; width:100%;">
-        <h3 id="txt-gateTitle">Giriş Yap</h3>
-        <input type="tel" id="gate-input" placeholder="Şifre veya Telefon">
-        <label style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); margin-bottom:15px;">
-            <input type="checkbox" id="rememberMe"> <span id="txt-remember">Beni Hatırla</span>
+        <h3 id="txt-gateTitle" style="margin-top:0">Giriş Yap</h3>
+        
+        <div class="input-group">
+            <input type="password" id="gate-input" placeholder="Şifre / Telefon">
+            <button class="eye-btn" onclick="ui.togglePass()">👁️</button>
+        </div>
+
+        <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); margin: 5px 0 15px 0; cursor:pointer;">
+            <input type="checkbox" id="rememberMe" style="width:18px; height:18px; margin:0"> <span id="txt-remember">Beni Hatırla</span>
         </label>
+
         <button class="btn" onclick="app.processLogin()" id="txt-btnLogin">Giriş Yap</button>
-        <button onclick="ui.back()" style="background:none; border:none; color:var(--muted); margin-top:10px; width:100%; cursor:pointer;">Geri Dön</button>
+        <button onclick="ui.back()" style="background:none; border:none; color:var(--muted); margin-top:15px; width:100%; cursor:pointer;">Geri Dön</button>
     </div>
 </div>
 
 <div id="admin-panel" style="display:none;">
     <div class="top-nav"><button class="exit-btn" onclick="app.logout()">ÇIKIŞ / LOGOUT</button></div>
     <div class="container" style="display:block;">
-        
         <div class="card">
             <h4 id="txt-finTitle">Finansal Özet</h4>
             <div class="f-grid">
-                <div><small id="txt-income">Gelir</small><div class="f-val" style="color:var(--success)" id="total-income">0₺</div></div>
-                <div><small id="txt-expense">Gider</small><div class="f-val" style="color:var(--danger)" id="total-expense">0₺</div></div>
-                <div><small id="txt-balance">Net</small><div class="f-val" style="color:var(--accent)" id="total-balance">0₺</div></div>
+                <div><small id="txt-income">Gelir</small><div id="total-income" style="color:var(--success); font-weight:800">0₺</div></div>
+                <div><small id="txt-expense">Gider</small><div id="total-expense" style="color:var(--danger); font-weight:800">0₺</div></div>
+                <div><small id="txt-balance">Net</small><div id="total-balance" style="color:var(--accent); font-weight:800">0₺</div></div>
             </div>
-            <input type="text" id="exp-desc" placeholder="Gider Açıklaması">
-            <input type="number" id="exp-val" placeholder="Tutar (₺)">
-            <button class="btn" style="background:var(--card); color:white; border:1px solid var(--border)" onclick="app.addExpense()">Gider Ekle</button>
+            <input type="text" id="exp-desc" placeholder="Gider Nedir?">
+            <input type="number" id="exp-val" placeholder="Tutar ₺">
+            <button class="btn" style="background:#1a1a1c; color:white;" onclick="app.addExpense()">Gider Ekle</button>
         </div>
 
         <div class="card" style="text-align:center; border: 2px solid var(--accent)">
             <h4 id="txt-adminScan">Giriş QR</h4>
-            <div id="admin-static-qr" style="background:white; padding:10px; display:inline-block; border-radius:15px; margin:10px 0;"></div>
+            <div id="admin-static-qr" style="background:white; padding:10px; display:inline-block; border-radius:15px;"></div>
         </div>
 
         <div class="card">
-            <h4 id="txt-studioInfo">İletişim Ayarları</h4>
+            <h4 id="txt-studioInfo">İletişim & Senkronizasyon</h4>
             <input type="text" id="conf-wp" placeholder="WhatsApp (905...)">
-            <input type="text" id="conf-ig" placeholder="Instagram (Kullanıcı Adı)">
-            <button class="btn" style="background:var(--success)" onclick="app.saveConfig()" id="txt-saveConf">Senkronize Et</button>
+            <input type="text" id="conf-ig" placeholder="Instagram Kullanıcı Adı">
+            <button class="btn" style="background:var(--success)" onclick="app.saveConfig()" id="txt-saveConf">Bilgileri Güncelle</button>
         </div>
 
         <div class="card">
             <h4 id="txt-addMember">Üye Ekle</h4>
             <input type="text" id="mName" placeholder="Ad Soyad">
-            <input type="tel" id="mPhone" placeholder="Telefon">
+            <input type="tel" id="mPhone" placeholder="Telefon (Giriş Şifresi)">
             <input type="number" id="mPack" placeholder="Seans">
-            <input type="number" id="mPrice" placeholder="Ödenen Ücret (₺)">
+            <input type="number" id="mPrice" placeholder="Paket Ücreti ₺">
             <button class="btn" onclick="app.addMember()" id="txt-save">Kaydet</button>
         </div>
 
         <div id="admin-list"></div>
-
         <div class="card">
-            <h3 id="txt-calManage">Program</h3>
+            <h3 id="txt-calManage">Takvim</h3>
             <input type="date" id="admin-date-picker" onchange="app.renderSchedule()">
             <div id="admin-cal-grid" style="display:grid; grid-template-columns:80px 1fr; gap:8px;"></div>
         </div>
@@ -103,10 +106,10 @@
     <div class="container" style="display:block;">
         <div id="tab-home" class="tab-content active">
             <div class="card" style="text-align:center;">
-                <h1 id="u-sess" style="font-size:70px; color:var(--accent); margin:0;">0</h1>
-                <p id="txt-remSess" style="color:var(--muted); font-size:12px;">KALAN SEANS</p>
-                <div id="member-reader" style="width:100%; border-radius:20px; overflow:hidden; display:none; border:2px solid var(--accent); margin:15px 0;"></div>
-                <button class="btn" onclick="app.startMemberScanner()" id="txt-btnCam">📷 QR Okut ve Gir</button>
+                <h1 id="u-sess" style="font-size:80px; color:var(--accent); margin:0;">0</h1>
+                <p id="txt-remSess" style="color:var(--muted); font-size:12px; font-weight:800">KALAN SEANS</p>
+                <div id="member-reader" style="width:100%; border-radius:20px; overflow:hidden; display:none; border:2px solid var(--accent); margin-bottom:15px;"></div>
+                <button class="btn" onclick="app.startMemberScanner()" id="txt-btnCam">📷 QR Okut ve Giriş Yap</button>
             </div>
             <div class="card"><h4 id="txt-contactStudio">Bize Ulaşın</h4><div id="u-contact-area" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div></div>
         </div>
@@ -123,8 +126,8 @@
 
 <script>
 const langData = {
-    tr: { gateTitle: "Giriş", btnLogin: "Giriş Yap", remember: "Beni Hatırla", finTitle: "Finansal Özet", income: "Gelir", expense: "Gider", balance: "Net", adminScan: "Giriş QR", studioInfo: "İletişim Ayarları", saveConf: "Senkronize Et", addMember: "Üye Ekle", save: "Kaydet", remSess: "KALAN SEANS", btnCam: "📷 QR Okut ve Gir", contactStudio: "Bize Ulaşın", calManage: "Program", navHome: "Panel", navCal: "Takvim", free: "MÜSAİT", busy: "DOLU" },
-    en: { gateTitle: "Login", btnLogin: "Login", remember: "Remember Me", finTitle: "Financial Summary", income: "Income", expense: "Expense", balance: "Net", adminScan: "Check-in QR", studioInfo: "Contact Settings", saveConf: "Sync Now", addMember: "Add Member", save: "Save", remSess: "REMAINING", btnCam: "📷 Scan QR & Enter", contactStudio: "Contact Us", calManage: "Schedule", navHome: "Home", navCal: "Schedule", free: "FREE", busy: "BUSY" }
+    tr: { gateTitle: "Giriş", btnLogin: "Giriş Yap", remember: "Beni Hatırla", finTitle: "Finansal Durum", income: "Gelir", expense: "Gider", balance: "Net", adminScan: "Stüdyo Giriş QR", studioInfo: "İletişim Ayarları", saveConf: "Bilgileri Güncelle", addMember: "Üye Ekle", save: "Üyeyi Kaydet", remSess: "KALAN SEANS", btnCam: "📷 QR Okut ve Giriş Yap", contactStudio: "Bize Ulaşın", calManage: "Program", navHome: "Panel", navCal: "Takvim", free: "MÜSAİT", busy: "DOLU" },
+    en: { gateTitle: "Login", btnLogin: "Login", remember: "Remember Me", finTitle: "Finance", income: "Income", expense: "Expense", balance: "Net", adminScan: "Check-in QR", studioInfo: "Settings", saveConf: "Update Info", addMember: "Add Member", save: "Save Member", remSess: "REMAINING", btnCam: "📷 Scan QR to Check-in", contactStudio: "Contact Us", calManage: "Schedule", navHome: "Home", navCal: "Schedule", free: "FREE", busy: "BUSY" }
 };
 
 const app = {
@@ -132,7 +135,7 @@ const app = {
     user: null,
 
     init() {
-        const saved = localStorage.getItem('studio_v29');
+        const saved = localStorage.getItem('studio_v30');
         if (saved) this.db = JSON.parse(saved);
         ui.lang = localStorage.getItem('studio_lang') || 'tr';
         ui.updateTexts();
@@ -144,25 +147,30 @@ const app = {
     },
 
     checkRemember() {
-        const saved = localStorage.getItem('sm_remember');
+        const saved = localStorage.getItem('sm_remember_v30');
         if(saved) {
             const d = JSON.parse(saved); ui.mode = d.mode;
             if(ui.mode === 'admin' && d.val === "1234") this.loadPanel('admin-panel');
-            else { const m = this.db.members.find(u => u.phone === d.val); if(m) { this.user = m; this.loadPanel('member-panel'); } }
+            else { 
+                const m = this.db.members.find(u => u.phone === d.val); 
+                if(m) { this.user = m; this.loadPanel('member-panel'); } 
+            }
         }
     },
 
     processLogin() {
         const val = document.getElementById('gate-input').value;
+        const remember = document.getElementById('rememberMe').checked;
+
         if(ui.mode === 'admin' && val === "1234") {
-            if(document.getElementById('rememberMe').checked) localStorage.setItem('sm_remember', JSON.stringify({val, mode:'admin'}));
+            if(remember) localStorage.setItem('sm_remember_v30', JSON.stringify({val, mode:'admin'}));
             this.loadPanel('admin-panel');
         } else {
             const m = this.db.members.find(u => u.phone === val);
             if(m) {
-                if(document.getElementById('rememberMe').checked) localStorage.setItem('sm_remember', JSON.stringify({val, mode:'member'}));
+                if(remember) localStorage.setItem('sm_remember_v30', JSON.stringify({val, mode:'member'}));
                 this.user = m; this.loadPanel('member-panel');
-            } else alert("Hatalı!");
+            } else alert("Hatalı Giriş! Üye bulunamadı.");
         }
     },
 
@@ -197,7 +205,6 @@ const app = {
         this.db.expenses.push({ desc: d, val: v, date: new Date().toISOString() });
         this.save(); this.updateFinance();
         document.getElementById('exp-desc').value = ""; document.getElementById('exp-val').value = "";
-        alert("Gider eklendi.");
     },
 
     updateFinance() {
@@ -211,7 +218,7 @@ const app = {
     saveConfig() {
         this.db.config.wp = document.getElementById('conf-wp').value;
         this.db.config.ig = document.getElementById('conf-ig').value;
-        this.save(); alert("Senkronize edildi!");
+        this.save(); alert("Senkronize Edildi!");
     },
 
     renderAdmin() {
@@ -219,8 +226,10 @@ const app = {
         this.db.members.forEach(m => {
             list.innerHTML += `<div class="card">
                 <b>${m.name}</b> (${m.sessions} Seans) - ${m.price}₺<br>
-                <button class="btn" style="padding:5px; font-size:10px; background:var(--danger); color:white" onclick="app.deleteMember(${m.id})">Sil</button>
-                <button class="btn" style="padding:5px; font-size:10px; background:white;" onclick="let s=prompt('Seans?', ${m.sessions}); if(s){m.sessions=parseInt(s); app.save(); app.renderAdmin();}">Düzenle</button>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button class="btn" style="padding:5px; font-size:10px; margin:0; background:var(--danger); color:white" onclick="app.deleteMember(${m.id})">Sil</button>
+                    <button class="btn" style="padding:5px; font-size:10px; margin:0; background:white;" onclick="let s=prompt('Seans?', ${m.sessions}); if(s){m.sessions=parseInt(s); app.save(); app.renderAdmin();}">Düzenle</button>
+                </div>
             </div>`;
         });
     },
@@ -229,7 +238,7 @@ const app = {
         document.getElementById('u-sess').innerText = this.user.sessions;
         const area = document.getElementById('u-contact-area'); area.innerHTML = "";
         if(this.db.config.wp) area.innerHTML += `<button class="btn" onclick="window.open('https://wa.me/${this.db.config.wp}')">WhatsApp</button>`;
-        if(this.db.config.ig) area.innerHTML += `<button class="btn" style="background:linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)" onclick="window.open('https://instagram.com/${this.db.config.ig}')">Instagram</button>`;
+        if(this.db.config.ig) area.innerHTML += `<button class="btn" style="background:linear-gradient(45deg, #f09433, #bc1888)" onclick="window.open('https://instagram.com/${this.db.config.ig}')">Instagram</button>`;
     },
 
     startMemberScanner() {
@@ -238,11 +247,11 @@ const app = {
         sc.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (text) => {
             if(text === "STUDIO_CHECKIN") {
                 if(this.user.sessions > 0) {
-                    this.user.sessions--; this.save(); this.renderUser(); alert("Giriş Başarılı! -1 Seans");
-                } else alert("Seans bitti!");
+                    this.user.sessions--; this.save(); this.renderUser(); alert("Giriş Başarılı! Seansınız düşüldü.");
+                } else alert("Seansınız kalmadı!");
             }
             sc.stop(); r.style.display='none';
-        }).catch(() => alert("Kamera Hatası!"));
+        }).catch(() => alert("Kamera İzni Gerekiyor!"));
     },
 
     renderSchedule() {
@@ -252,7 +261,7 @@ const app = {
         for(let i=7; i<=21; i++){
             const t = i+":00"; const key = date+"_"+t; const state = this.db.schedule[key]||"FREE";
             const label = ui.lang==='tr'?(state==='FREE'?'MÜSAİT':'DOLU'):state;
-            const html = `<div style="padding:10px">${t}</div><div class="cal-slot ${state==='FREE'?'slot-free':'slot-busy'}" data-key="${key}">${label}</div>`;
+            const html = `<div style="padding:10px; font-size:12px">${t}</div><div class="cal-slot ${state==='FREE'?'slot-free':'slot-busy'}" data-key="${key}">${label}</div>`;
             aGrid.innerHTML += html; uGrid.innerHTML += html;
         }
         document.querySelectorAll('#admin-cal-grid .cal-slot').forEach(el => {
@@ -261,15 +270,24 @@ const app = {
     },
 
     deleteMember(id) { if(confirm('Silinsin mi?')) { this.db.members = this.db.members.filter(x=>x.id!==id); this.save(); this.renderAdmin(); this.updateFinance(); }},
-    save() { localStorage.setItem('studio_v29', JSON.stringify(this.db)); },
-    logout() { localStorage.removeItem('sm_remember'); location.reload(); },
-    switchTab(id, el) { document.querySelectorAll('.tab-content').forEach(t=>t.style.display='none'); document.getElementById(id).style.display='block'; document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); this.renderSchedule(); }
+    save() { localStorage.setItem('studio_v30', JSON.stringify(this.db)); },
+    logout() { localStorage.removeItem('sm_remember_v30'); location.reload(); },
+    switchTab(id, el) { 
+        document.querySelectorAll('.tab-content').forEach(t=>t.style.display='none'); 
+        document.getElementById(id).style.display='block'; 
+        document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); 
+        el.classList.add('active'); this.renderSchedule(); 
+    }
 };
 
 const ui = {
     lang: 'tr',
     showGate(m) { this.mode=m; document.getElementById('auth-selection').style.display='none'; document.getElementById('gate-page').style.display='flex'; },
     back() { document.getElementById('gate-page').style.display='none'; document.getElementById('auth-selection').style.display='flex'; },
+    togglePass() {
+        const inp = document.getElementById('gate-input');
+        inp.type = inp.type === 'password' ? 'text' : 'password';
+    },
     toggleLang() { 
         this.lang = this.lang==='tr'?'en':'tr'; localStorage.setItem('studio_lang', this.lang);
         document.getElementById('langBtn').innerText=this.lang.toUpperCase(); this.updateTexts(); app.renderSchedule(); 
