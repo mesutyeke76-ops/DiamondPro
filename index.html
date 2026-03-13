@@ -3,9 +3,11 @@
 
 <head>
 
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <meta charset="UTF-8">
 
-<title>DiamondPro SaaS</title>
+<title>DiamondPro Mobile</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://unpkg.com/html5-qrcode"></script>
@@ -20,39 +22,57 @@ color:white;
 }
 
 header{
+padding:15px;
+text-align:center;
+font-size:20px;
 background:#020617;
-padding:20px;
-font-size:22px;
 }
 
 .container{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-gap:20px;
-padding:20px;
+padding:10px;
 }
 
 .card{
 background:#1e293b;
-padding:20px;
-border-radius:14px;
-box-shadow:0 5px 20px rgba(0,0,0,.4);
-}
-
-button{
-background:#3b82f6;
-border:none;
-padding:10px;
-border-radius:8px;
-color:white;
-cursor:pointer;
+padding:15px;
+margin-bottom:12px;
+border-radius:12px;
 }
 
 input{
-padding:8px;
-border-radius:6px;
+width:100%;
+padding:10px;
+margin-top:6px;
+border-radius:8px;
 border:none;
-margin:5px;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+background:#3b82f6;
+color:white;
+font-size:15px;
+}
+
+nav{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+background:#020617;
+display:flex;
+justify-content:space-around;
+padding:10px;
+}
+
+nav button{
+width:auto;
+background:none;
+font-size:14px;
 }
 
 .success{
@@ -66,31 +86,19 @@ color:#22c55e;
 <body>
 
 <header>
-💎 DiamondPro SaaS Demo
+💎 DiamondPro Mobile
 </header>
 
-<div class="container">
+<div class="container" id="home">
 
 <div class="card">
 
 <h3>Yeni Öğrenci</h3>
 
-<input id="name" placeholder="Ad">
-<input id="phone" placeholder="Telefon">
+<input id="name" placeholder="Ad Soyad">
 <input id="sessions" placeholder="Seans">
 
-<button onclick="addStudent()">Ekle</button>
-
-</div>
-
-<div class="card">
-
-<h3>Ödeme Kaydı</h3>
-
-<input id="payStudent" placeholder="Öğrenci ID">
-<input id="amount" placeholder="Tutar">
-
-<button onclick="addPayment()">Ödeme Kaydet</button>
+<button onclick="addStudent()">Kaydet</button>
 
 </div>
 
@@ -104,80 +112,76 @@ color:#22c55e;
 
 <div class="card">
 
-<h3>QR Check-in</h3>
-
-<div id="reader" style="width:300px"></div>
-
-<div id="checkResult"></div>
-
-</div>
-
-<div class="card">
-
 <h3>AI Analiz</h3>
 
 <div id="ai"></div>
 
 </div>
 
+</div>
+
+<div class="container" id="qr" style="display:none">
+
+<div class="card">
+
+<h3>QR Check-in</h3>
+
+<div id="reader"></div>
+
+<div id="result"></div>
+
+</div>
+
+</div>
+
+<div class="container" id="students" style="display:none">
+
 <div class="card">
 
 <h3>Öğrenciler</h3>
 
-<ul id="students"></ul>
+<ul id="list"></ul>
 
 </div>
 
 </div>
+
+<nav>
+
+<button onclick="show('home')">🏠</button>
+<button onclick="show('qr')">📷</button>
+<button onclick="show('students')">👥</button>
+
+</nav>
 
 <script>
 
 let students = JSON.parse(localStorage.getItem("students")||"[]")
-let payments = JSON.parse(localStorage.getItem("payments")||"[]")
 let attendance = JSON.parse(localStorage.getItem("attendance")||"[]")
 
 function save(){
 
 localStorage.setItem("students",JSON.stringify(students))
-localStorage.setItem("payments",JSON.stringify(payments))
 localStorage.setItem("attendance",JSON.stringify(attendance))
 
 }
 
-function renderStudents(){
+function show(id){
 
-const list=document.getElementById("students")
+document.getElementById("home").style.display="none"
+document.getElementById("qr").style.display="none"
+document.getElementById("students").style.display="none"
 
-list.innerHTML=""
-
-students.forEach(s=>{
-
-list.innerHTML+=`
-<li>
-
-ID:${s.id}
-${s.name}
-Seans:${s.sessions}
-
-</li>
-`
-
-})
+document.getElementById(id).style.display="block"
 
 }
 
 function addStudent(){
 
 let student={
-
 id:Date.now(),
-
 name:document.getElementById("name").value,
-
-phone:document.getElementById("phone").value,
-
 sessions:Number(document.getElementById("sessions").value)
-
 }
 
 students.push(student)
@@ -188,31 +192,34 @@ renderStudents()
 
 }
 
-function addPayment(){
+function renderStudents(){
 
-payments.push({
+let list=document.getElementById("list")
 
-student:document.getElementById("payStudent").value,
+list.innerHTML=""
 
-amount:Number(document.getElementById("amount").value),
+students.forEach(s=>{
 
-date:new Date()
+list.innerHTML+=`
+<li>
+${s.name}
+(Seans:${s.sessions})
+<br>
+QR: ${s.id}
+</li>
+`
 
 })
 
-save()
-
-updateChart()
-
 }
 
-function checkin(studentId){
+function checkin(id){
 
-let student=students.find(s=>s.id==studentId)
+let student=students.find(s=>s.id==id)
 
 if(!student){
 
-document.getElementById("checkResult").innerHTML="Öğrenci bulunamadı"
+document.getElementById("result").innerHTML="Öğrenci bulunamadı"
 
 return
 
@@ -220,7 +227,7 @@ return
 
 if(student.sessions<=0){
 
-document.getElementById("checkResult").innerHTML="Seans bitmiş"
+document.getElementById("result").innerHTML="Seans bitti"
 
 return
 
@@ -228,50 +235,16 @@ return
 
 student.sessions--
 
-attendance.push({
-
-student:studentId,
-
-time:new Date()
-
-})
+attendance.push({id,time:new Date()})
 
 save()
 
-renderStudents()
-
-document.getElementById("checkResult").innerHTML=
-"<span class='success'>Seans düşüldü</span>"
+document.getElementById("result").innerHTML=
+"<span class='success'>Giriş kaydedildi</span>"
 
 updateAI()
 
 }
-
-function updateChart(){
-
-let total = payments.reduce((a,b)=>a+b.amount,0)
-
-chart.data.datasets[0].data=[total]
-
-chart.update()
-
-}
-
-const ctx=document.getElementById("chart")
-
-const chart=new Chart(ctx,{
-
-type:"bar",
-
-data:{
-labels:["Gelir"],
-datasets:[{
-label:"Toplam",
-data:[0]
-}]
-}
-
-})
 
 function updateAI(){
 
@@ -287,22 +260,31 @@ hours[h]=(hours[h]||0)+1
 
 let busiest=Object.keys(hours).reduce((a,b)=>hours[a]>hours[b]?a:b,0)
 
-document.getElementById("ai").innerHTML=
-"En yoğun saat: "+busiest+":00"
+document.getElementById("ai").innerHTML="En yoğun saat: "+busiest+":00"
 
 }
 
+const ctx=document.getElementById("chart")
+
+const chart=new Chart(ctx,{
+type:"bar",
+data:{
+labels:["Gelir"],
+datasets:[{
+data:[0]
+}]
+}
+})
+
 const scanner=new Html5QrcodeScanner("reader",{fps:10})
 
-scanner.render((result)=>{
+scanner.render(result=>{
 
 checkin(Number(result))
 
 })
 
 renderStudents()
-
-updateChart()
 
 updateAI()
 
