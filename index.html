@@ -1,59 +1,338 @@
-<style>
-    :root { 
-        --bg: #050505; 
-        --card: #111113; 
-        --accent: #d2fe00; 
-        --text: #ffffff; 
-        --muted: #8e8e93; 
-        --border: #1c1c1e; 
-        --danger: #ff3b30; 
-        --success: #34c759; 
-        --warning: #ffcc00; 
-    }
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DiamondPro V32.2 | Fixed</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        :root { 
+            --bg: #050505; 
+            --card: #111113; 
+            --accent: #d2fe00; 
+            --text: #ffffff; 
+            --muted: #8e8e93; 
+            --border: #1c1c1e; 
+            --danger: #ff3b30; 
+            --success: #34c759; 
+            --warning: #ffcc00; 
+        }
 
-    /* Bozuk ekranı düzelten kritik ayarlar */
-    html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        background-color: var(--bg); /* Arka planı kesin olarak siyah yap */
-        color: var(--text);
-        overflow-x: hidden;
-    }
+        /* KRİTİK DÜZELTME: Ekranın beyaz kalmasını engeller */
+        html, body {
+            background-color: var(--bg) !important;
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
-    * { 
-        box-sizing: border-box; 
-        font-family: 'Plus Jakarta Sans', sans-serif; 
-    }
+        * { box-sizing: border-box; }
 
-    body { 
-        min-height: 100vh;
-        padding-bottom: 120px; /* Navigasyon için boşluk */
-    }
+        /* Ana Giriş Ekranı Düzeltmesi */
+        #auth-selection {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            background-color: var(--bg);
+            position: fixed; /* Ekranın kaymasını engeller */
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
 
-    /* Container görünürlüğünü garanti altına al */
-    .container { 
-        max-width: 600px; 
-        margin: 0 auto; 
-        padding: 20px; 
-        display: none; /* JS ile açılır */
-        width: 100%;
-    }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            width: 100%;
+            display: none; /* JS ile açılacak */
+        }
 
-    /* Card tasarımlarını netleştir */
-    .card { 
-        background: var(--card); 
-        border-radius: 24px; 
-        padding: 20px; 
-        margin-bottom: 15px; 
-        border: 1px solid var(--border); 
-        position: relative;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    }
-    
-    /* Paylaşma butonu görseli düzeltme */
-    .share-card {
-        background: linear-gradient(135deg, #1a1a1c 0%, #050505 100%) !important;
-        border: 1px solid var(--accent) !important;
-    }
-</style>
+        .card { 
+            background: var(--card); 
+            border-radius: 24px; 
+            padding: 20px; 
+            margin-bottom: 15px; 
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .btn { 
+            width: 100%; 
+            padding: 16px; 
+            border-radius: 14px; 
+            border: none; 
+            background: var(--accent); 
+            color: black; 
+            font-weight: 800; 
+            cursor: pointer; 
+            margin-top: 10px;
+            font-size: 15px;
+        }
+
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border); 
+            background: #1a1a1c; 
+            color: white; 
+            margin-bottom: 10px; 
+            outline: none; 
+        }
+
+        .input-group { position: relative; width: 100%; }
+        .eye-btn { position: absolute; right: 15px; top: 15px; background: none; border: none; color: var(--muted); cursor: pointer; }
+
+        .top-nav { display: flex; justify-content: center; padding: 15px; background: var(--bg); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
+        .exit-btn { background: var(--danger); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 800; font-size: 11px; }
+
+        .nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10,10,12,0.95); backdrop-filter: blur(20px); display: none; justify-content: space-around; padding: 15px 0 35px; border-top: 1px solid var(--border); z-index: 5000; }
+        .nav-item { color: var(--muted); font-size: 10px; text-align: center; flex: 1; cursor: pointer; }
+        .nav-item.active { color: var(--accent); }
+
+        .warning-low { color: var(--warning) !important; animation: blink 1.5s infinite; }
+        .warning-empty { color: var(--danger) !important; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .log-item { padding: 10px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 13px; }
+        
+        #gate-page {
+            position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
+        }
+    </style>
+</head>
+<body onload="app.init()">
+
+<div id="auth-selection">
+    <h1 style="letter-spacing: -2px; font-weight: 800; font-size: 32px; color: var(--accent); margin-bottom: 30px;">DIAMOND PRO</h1>
+    <button class="btn" onclick="ui.showGate('admin')">👑 Yönetici Paneli</button>
+    <button class="btn" style="background:var(--card); color:white; border:1px solid var(--border)" onclick="ui.showGate('member')">👤 Üye Girişi</button>
+</div>
+
+<div id="gate-page">
+    <div class="card" style="max-width:380px; width:100%;">
+        <h3 id="txt-gateTitle" style="margin-top:0">Giriş Yap</h3>
+        <div class="input-group">
+            <input type="password" id="gate-input" placeholder="Şifre / Telefon">
+            <button class="eye-btn" onclick="ui.togglePass()">👁️</button>
+        </div>
+        <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); margin: 5px 0 15px 0; cursor:pointer;">
+            <input type="checkbox" id="rememberMe"> <span id="txt-remember">Beni Hatırla</span>
+        </label>
+        <button class="btn" onclick="app.processLogin()" id="txt-btnLogin">Giriş Yap</button>
+        <button onclick="ui.back()" style="background:none; border:none; color:var(--muted); margin-top:15px; width:100%; cursor:pointer;">Geri Dön</button>
+    </div>
+</div>
+
+<div id="admin-panel" style="display:none;">
+    <div class="top-nav"><button class="exit-btn" onclick="app.logout()">ÇIKIŞ</button></div>
+    <div class="container" id="admin-container" style="display:block;">
+        <div class="card" style="border: 1px solid var(--accent);">
+            <h4 style="margin:0; color:var(--accent);">🔗 Uygulamayı Paylaş</h4>
+            <button class="btn" onclick="app.shareApp()" style="background:white; color:black; margin-top:10px;">Bağlantıyı Gönder</button>
+        </div>
+        <div class="card">
+            <h4>Finansal Durum</h4>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; text-align:center;">
+                <div><small>Gelir</small><div id="total-income" style="color:var(--success); font-weight:800">0₺</div></div>
+                <div><small>Gider</small><div id="total-expense" style="color:var(--danger); font-weight:800">0₺</div></div>
+                <div><small>Net</small><div id="total-balance" style="color:var(--accent); font-weight:800">0₺</div></div>
+            </div>
+            <input type="text" id="exp-desc" placeholder="Gider Açıklaması" style="margin-top:15px">
+            <input type="number" id="exp-val" placeholder="Tutar ₺">
+            <button class="btn" style="background:#1a1a1c; color:white;" onclick="app.addExpense()">Gider Ekle</button>
+        </div>
+        <div class="card" style="text-align:center;">
+            <h4>Giriş QR</h4>
+            <div id="admin-static-qr" style="background:white; padding:10px; display:inline-block; border-radius:15px;"></div>
+        </div>
+        <div class="card">
+            <h4>Yeni Üye</h4>
+            <input type="text" id="mName" placeholder="Ad Soyad">
+            <input type="tel" id="mPhone" placeholder="Telefon (Giriş Şifresi)">
+            <input type="number" id="mPack" placeholder="Seans">
+            <input type="number" id="mPrice" placeholder="Ücret ₺">
+            <button class="btn" onclick="app.addMember()">Kaydet</button>
+        </div>
+        <div id="admin-list"></div>
+    </div>
+</div>
+
+<div id="member-panel" style="display:none;">
+    <div class="top-nav"><button class="exit-btn" onclick="app.logout()">ÇIKIŞ</button></div>
+    <div class="container" id="member-container" style="display:block;">
+        <div id="tab-home">
+            <div class="card" style="text-align:center;">
+                <h1 id="u-sess" style="font-size:80px; margin:0;">0</h1>
+                <p style="color:var(--muted); font-size:12px; font-weight:800">KALAN SEANS</p>
+                <div id="member-reader" style="width:100%; border-radius:20px; overflow:hidden; display:none; border:2px solid var(--accent); margin-bottom:15px;"></div>
+                <button class="btn" onclick="app.startMemberScanner()">📷 QR Okut</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="nav" id="member-nav">
+    <div class="nav-item active" onclick="app.switchTab('tab-home', this)">🏠<br>Panel</div>
+</nav>
+
+<div id="log-modal" class="modal">
+    <div class="card" style="width: 100%; max-width: 400px;">
+        <h3 id="modal-title">Geçmiş</h3>
+        <div id="log-list" style="max-height: 300px; overflow-y: auto;"></div>
+        <button class="btn" onclick="ui.closeLogs()" style="background:var(--danger); color:white">Kapat</button>
+    </div>
+</div>
+
+<script>
+const app = {
+    db: { members: [], config: { wp: "", ig: "" }, schedule: {}, expenses: [] },
+    user: null,
+
+    init() {
+        const saved = localStorage.getItem('studio_v32_2');
+        if (saved) this.db = JSON.parse(saved);
+        this.checkRemember();
+        this.updateFinance();
+    },
+
+    save() { localStorage.setItem('studio_v32_2', JSON.stringify(this.db)); },
+
+    checkRemember() {
+        const saved = localStorage.getItem('sm_rem_v32');
+        if(saved) {
+            const d = JSON.parse(saved);
+            if(d.mode === 'admin' && d.val === "1234") this.loadPanel('admin-panel');
+            else { 
+                const m = this.db.members.find(u => u.phone === d.val); 
+                if(m) { this.user = m; this.loadPanel('member-panel'); } 
+            }
+        }
+    },
+
+    processLogin() {
+        const val = document.getElementById('gate-input').value;
+        const rem = document.getElementById('rememberMe').checked;
+        if(ui.mode === 'admin' && val === "1234") {
+            if(rem) localStorage.setItem('sm_rem_v32', JSON.stringify({val, mode:'admin'}));
+            this.loadPanel('admin-panel');
+        } else {
+            const m = this.db.members.find(u => u.phone === val);
+            if(m) {
+                if(rem) localStorage.setItem('sm_rem_v32', JSON.stringify({val, mode:'member'}));
+                this.user = m; this.loadPanel('member-panel');
+            } else alert("Hatalı Giriş!");
+        }
+    },
+
+    loadPanel(id) {
+        document.getElementById('auth-selection').style.display='none';
+        document.getElementById('gate-page').style.display='none';
+        document.getElementById(id).style.display='block';
+        if(id === 'admin-panel') {
+            this.renderAdmin();
+            document.getElementById('admin-static-qr').innerHTML = "";
+            new QRCode(document.getElementById("admin-static-qr"), { text: "STUDIO_CHECKIN", width: 160, height: 160 });
+        } else {
+            document.getElementById('member-nav').style.display='flex';
+            this.renderUser();
+        }
+    },
+
+    addMember() {
+        const n = document.getElementById('mName').value, p = document.getElementById('mPhone').value;
+        if(!n || !p) return;
+        this.db.members.push({ id: Date.now(), name: n, phone: p, sessions: parseInt(document.getElementById('mPack').value)||0, price: parseFloat(document.getElementById('mPrice').value)||0, logs: [] });
+        this.save(); this.renderAdmin(); this.updateFinance();
+        document.getElementById('mName').value = ""; document.getElementById('mPhone').value = "";
+    },
+
+    renderAdmin() {
+        const list = document.getElementById('admin-list'); list.innerHTML = "";
+        this.db.members.forEach(m => {
+            const status = m.sessions <= 2 ? (m.sessions === 0 ? 'color:var(--danger)' : 'color:var(--warning)') : '';
+            list.innerHTML += `<div class="card">
+                <b style="${status}">${m.name}</b> (${m.sessions} Seans)<br>
+                <div style="display:flex; gap:8px; margin-top:10px;">
+                    <button class="btn" style="padding:8px; font-size:10px; margin:0; background:white" onclick="app.showLogs(${m.id})">Geçmiş</button>
+                    <button class="btn" style="padding:8px; font-size:10px; margin:0; background:var(--danger); color:white" onclick="app.deleteMember(${m.id})">Sil</button>
+                </div>
+            </div>`;
+        });
+    },
+
+    showLogs(id) {
+        const user = this.db.members.find(m => m.id === id);
+        document.getElementById('modal-title').innerText = user.name;
+        const logList = document.getElementById('log-list');
+        logList.innerHTML = (user.logs && user.logs.length) ? user.logs.reverse().map(l => `<div class="log-item"><span>📅 ${l.date}</span><span>${l.time}</span></div>`).join('') : "Kayıt yok.";
+        document.getElementById('log-modal').style.display = 'flex';
+    },
+
+    renderUser() {
+        const sessEl = document.getElementById('u-sess');
+        const count = this.user.sessions;
+        sessEl.innerText = count;
+        sessEl.className = count === 0 ? 'warning-empty' : (count <= 2 ? 'warning-low' : '');
+    },
+
+    startMemberScanner() {
+        if(this.user.sessions <= 0) { alert("Seans bitti!"); return; }
+        const r = document.getElementById('member-reader'); r.style.display='block';
+        const sc = new Html5Qrcode("member-reader");
+        sc.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (text) => {
+            if(text === "STUDIO_CHECKIN") {
+                this.user.sessions--;
+                const now = new Date();
+                if(!this.user.logs) this.user.logs = [];
+                this.user.logs.push({ date: now.toLocaleDateString('tr-TR'), time: now.toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}) });
+                this.save(); this.renderUser(); alert("Başarılı!");
+            }
+            sc.stop(); r.style.display='none';
+        }).catch(() => alert("Kamera Hatası!"));
+    },
+
+    shareApp: async () => {
+        try { await navigator.share({ title: 'Diamond Pro', url: window.location.href }); } catch(e) { navigator.clipboard.writeText(window.location.href); alert("Kopyalandı!"); }
+    },
+
+    updateFinance() {
+        const inc = this.db.members.reduce((a, m) => a + (m.price || 0), 0);
+        const exp = this.db.expenses.reduce((a, e) => a + (e.val || 0), 0);
+        document.getElementById('total-income').innerText = inc + "₺";
+        document.getElementById('total-expense').innerText = exp + "₺";
+        document.getElementById('total-balance').innerText = (inc - exp) + "₺";
+    },
+
+    addExpense() {
+        const d = document.getElementById('exp-desc').value, v = parseFloat(document.getElementById('exp-val').value);
+        if(!d || !v) return; this.db.expenses.push({ desc: d, val: v }); this.save(); this.updateFinance();
+        document.getElementById('exp-desc').value = ""; document.getElementById('exp-val').value = "";
+    },
+
+    deleteMember(id) { if(confirm('Silinsin mi?')) { this.db.members = this.db.members.filter(x=>x.id!==id); this.save(); this.renderAdmin(); this.updateFinance(); }},
+    logout() { localStorage.removeItem('sm_rem_v32'); location.reload(); }
+};
+
+const ui = {
+    showGate(m) { this.mode=m; document.getElementById('auth-selection').style.display='none'; document.getElementById('gate-page').style.display='flex'; },
+    back() { document.getElementById('gate-page').style.display='none'; document.getElementById('auth-selection').style.display='flex'; },
+    togglePass() { const inp = document.getElementById('gate-input'); inp.type = inp.type === 'password' ? 'text' : 'password'; },
+    closeLogs() { document.getElementById('log-modal').style.display = 'none'; }
+};
+</script>
+</body>
+</html>
