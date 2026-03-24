@@ -507,6 +507,25 @@ font-size:20px;flex-shrink:0;
 .contact-ico.web{background:rgba(212,168,67,0.15);}
 .contact-link{color:var(–blue);font-size:13.5px;}
 .contact-link:hover{color:var(–gold);}
+/* CONTACT EDIT ROWS */
+.ci-row{
+display:flex;align-items:flex-start;gap:10px;
+padding:10px 12px;background:var(–bg3);border-radius:10px;
+border:1px solid var(–border3);
+}
+.ci-icon{font-size:18px;flex-shrink:0;margin-top:20px;}
+.ci-row input{
+width:100%;padding:8px 10px;background:var(–bg2);border:1px solid var(–border);
+border-radius:8px;color:var(–text);font-family:‘Outfit’,sans-serif;font-size:13px;
+}
+/* Extra phones list */
+.extra-phone-row{
+display:flex;align-items:center;gap:8px;padding:9px 12px;
+background:var(–bg3);border-radius:8px;border:1px solid var(–border3);
+}
+.extra-phone-row .ep-type{font-size:16px;flex-shrink:0;}
+.extra-phone-row .ep-num{flex:1;font-size:13px;font-family:‘JetBrains Mono’;}
+.extra-phone-row .ep-label{font-size:11px;color:var(–text3);}
 
 /* MODAL */
 .modal-overlay{
@@ -582,6 +601,11 @@ border:1px solid var(–border2);background:var(–bg3);color:var(–text2);tran
 .filter-chip.active{background:var(–gold);color:#000;border-color:var(–gold);}
 
 /* EDIT TABS */
+/* Pending appointment card highlight */
+.pending-card{
+border-left:3px solid var(–gold)!important;
+background:rgba(212,168,67,0.04)!important;
+}
 .edit-tab{
 padding:7px 14px;border-radius:7px;border:none;background:transparent;
 color:var(–text2);font-size:12.5px;font-weight:600;cursor:pointer;
@@ -655,6 +679,7 @@ border-radius:18px;padding:24px;position:relative;
 cursor:pointer;transition:.25s;overflow:hidden;
 }
 .pkg-card:hover{border-color:var(–gold);transform:translateY(-4px);box-shadow:0 16px 48px rgba(212,168,67,0.15);}
+.pkg-card:hover .pkg-actions{opacity:1;pointer-events:all;}
 .pkg-card.featured{border-color:var(–gold);background:linear-gradient(135deg,rgba(212,168,67,0.07),var(–bg2));}
 .pkg-tag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);
 background:var(–gold);color:#000;font-size:9.5px;font-weight:800;
@@ -665,6 +690,30 @@ padding:3px 12px;border-radius:20px;letter-spacing:.5px;white-space:nowrap;}
 .pkg-features{margin-top:16px;display:flex;flex-direction:column;gap:8px;}
 .pkg-feat{font-size:13px;color:var(–text2);display:flex;align-items:center;gap:8px;}
 .pkg-feat::before{content:‘✓’;color:var(–green);font-weight:700;flex-shrink:0;}
+/* Package hover action bar */
+.pkg-actions{
+position:absolute;bottom:0;left:0;right:0;
+display:flex;gap:0;opacity:0;pointer-events:none;transition:.2s;
+}
+.pkg-actions button{
+flex:1;padding:11px 6px;border:none;cursor:pointer;
+font-size:12px;font-weight:700;font-family:‘Outfit’,sans-serif;
+transition:.15s;
+}
+.pkg-actions .pa-edit{background:rgba(212,168,67,0.9);color:#000;border-radius:0 0 0 16px;}
+.pkg-actions .pa-star{background:rgba(60,60,80,0.95);color:var(–gold);}
+.pkg-actions .pa-del{background:rgba(224,80,80,0.9);color:#fff;border-radius:0 0 16px 0;}
+.pkg-actions button:hover{filter:brightness(1.15);}
+
+/* LANGUAGE SELECTOR */
+.lang-btn{
+display:flex;align-items:center;gap:6px;
+padding:6px 12px;background:var(–bg3);border:1px solid var(–border2);
+border-radius:8px;color:var(–text2);font-size:12px;font-weight:600;
+cursor:pointer;transition:.2s;font-family:‘Outfit’,sans-serif;
+}
+.lang-btn:hover{border-color:var(–gold);color:var(–gold);}
+.lang-btn.active{border-color:var(–gold);color:var(–gold);background:rgba(212,168,67,0.1);}
 
 /* ANNOUNCEMENT / INFO BANNER */
 .info-banner{
@@ -792,10 +841,10 @@ background-repeat:no-repeat;background-position:12px center;
     <nav class="sb-nav">
       <div class="nav-sec">Ana Menü</div>
       <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard',this)">
-        <span class="nav-icon">📊</span> Kontrol Paneli
+        <span class="nav-icon">📊</span> <span data-i18n="dashboard">Kontrol Paneli</span>
       </div>
       <div class="nav-item" data-page="members" onclick="showPage('members',this)">
-        <span class="nav-icon">👥</span> Üyeler
+        <span class="nav-icon">👥</span> <span data-i18n="members">Üyeler</span>
         <span class="nav-badge" id="expBadge">0</span>
       </div>
       <div class="nav-item" data-page="checkin" onclick="showPage('checkin',this)">
@@ -803,26 +852,26 @@ background-repeat:no-repeat;background-position:12px center;
       </div>
       <div class="nav-sec">Program</div>
       <div class="nav-item" data-page="schedule" onclick="showPage('schedule',this)">
-        <span class="nav-icon">📅</span> Ders Programı
+        <span class="nav-icon">📅</span> <span data-i18n="schedule">Ders Programı</span>
       </div>
       <div class="nav-item" data-page="appointments" onclick="showPage('appointments',this)">
-        <span class="nav-icon">🗓</span> Randevular
+        <span class="nav-icon">🗓</span> <span data-i18n="appointments">Randevular</span>
       </div>
       <div class="nav-sec">İşletme</div>
       <div class="nav-item" data-page="packages" onclick="showPage('packages',this)">
-        <span class="nav-icon">📦</span> Üyelik Paketleri
+        <span class="nav-icon">📦</span> <span data-i18n="packages">Üyelik Paketleri</span>
       </div>
       <div class="nav-item" data-page="finance" onclick="showPage('finance',this)">
-        <span class="nav-icon">💰</span> Finans
+        <span class="nav-icon">💰</span> <span data-i18n="finance">Finans</span>
       </div>
       <div class="nav-item" data-page="gallery" onclick="showPage('gallery',this)">
-        <span class="nav-icon">🖼</span> Galeri
+        <span class="nav-icon">🖼</span> <span data-i18n="gallery">Galeri</span>
       </div>
       <div class="nav-item" data-page="contact" onclick="showPage('contact',this)">
-        <span class="nav-icon">📞</span> İletişim & Bilgiler
+        <span class="nav-icon">📞</span> <span data-i18n="contact">İletişim & Bilgiler</span>
       </div>
       <div class="nav-item" data-page="settings" onclick="showPage('settings',this)">
-        <span class="nav-icon">⚙️</span> Ayarlar
+        <span class="nav-icon">⚙️</span> <span data-i18n="settings">Ayarlar</span>
       </div>
     </nav>
     <div class="sb-footer">
@@ -833,7 +882,7 @@ background-repeat:no-repeat;background-position:12px center;
           <small>👑 Yönetici</small>
         </div>
       </div>
-      <button class="btn-logout" onclick="logout()">↩ Çıkış Yap</button>
+      <button class="btn-logout" onclick="logout()" data-i18n="logout">↩ Çıkış Yap</button>
     </div>
   </aside>
 
@@ -845,7 +894,11 @@ background-repeat:no-repeat;background-position:12px center;
       </div>
       <div class="topbar-right">
         <span style="font-size:12px;color:var(--text3);font-family:'JetBrains Mono'" id="topbarDate"></span>
-        <button class="tbtn" onclick="openModal('addMemberModal')">+ Üye Ekle</button>
+        <div style="display:flex;gap:4px">
+          <button class="lang-btn active" id="langTR" onclick="setLang('tr')">🇹🇷 TR</button>
+          <button class="lang-btn" id="langEN" onclick="setLang('en')">🇬🇧 EN</button>
+        </div>
+        <button class="tbtn" onclick="openModal('addMemberModal')" data-i18n="add_member">+ Üye Ekle</button>
         <button class="tbtn gold" onclick="openModal('quickCheckinModal')">✓ Check-in</button>
       </div>
     </div>
@@ -856,6 +909,12 @@ background-repeat:no-repeat;background-position:12px center;
   <!-- ══ DASHBOARD ══ -->
   <div class="page active" id="page-dashboard">
     <div class="stats-grid" id="dashStats"></div>
+    <!-- Pending appointments alert -->
+    <div id="pendingApptAlert" style="display:none;margin-bottom:16px;padding:14px 18px;background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.35);border-radius:12px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="showPage('appointments',document.querySelector('[data-page=appointments]'))">
+      <span style="font-size:22px">⏳</span>
+      <div style="flex:1"><strong id="pendingApptText">Bekleyen randevular var</strong><div style="font-size:12px;color:var(--text2)">Randevular sayfasına git → Onay ver</div></div>
+      <span style="color:var(--gold);font-size:13px">→</span>
+    </div>
     <div class="two-col">
       <div>
         <div class="card" style="margin-bottom:20px">
@@ -894,6 +953,11 @@ background-repeat:no-repeat;background-position:12px center;
         <input class="search-input" type="text" id="memberSearch" placeholder="İsim, telefon ara..." oninput="filterMembers()" style="width:200px">
         <button class="tbtn gold" onclick="openModal('addMemberModal')">+ Yeni Üye</button>
       </div>
+    </div>
+    <!-- Pending appointment banner inside members page -->
+    <div id="pendingApptBanner" style="display:none;margin-bottom:14px;padding:13px 16px;background:rgba(212,168,67,0.1);border:1px solid rgba(212,168,67,0.3);border-radius:10px;cursor:pointer" onclick="showPage('appointments',document.querySelector('[data-page=appointments]'));switchApptMode('list')">
+      <span id="pendingApptBannerText" style="font-size:13px;color:var(--gold);font-weight:600"></span>
+      <span style="font-size:12px;color:var(--text2)"> — Onaylamak için tıklayın →</span>
     </div>
     <div class="filter-bar" id="memberFilters">
       <div class="filter-chip active" data-filter="all" onclick="setMemberFilter('all',this)">Tümü</div>
@@ -1097,22 +1161,27 @@ background-repeat:no-repeat;background-position:12px center;
 
   <!-- ══ GALLERY ══ -->
   <div class="page" id="page-gallery">
-    <div class="sh"><h3>Stüdyo Galerisi</h3>
+    <div class="sh"><h3 data-i18n="gallery">Stüdyo Galerisi</h3>
       <div class="sh-actions">
         <div style="display:flex;background:var(--bg3);border-radius:10px;padding:4px;gap:4px">
-          <button class="edit-tab active" id="galTab-view" onclick="switchEditTab('gal','view')">👁 Görüntüle</button>
-          <button class="edit-tab" id="galTab-edit" onclick="switchEditTab('gal','edit')">✏️ Düzenle</button>
+          <button class="edit-tab active" id="galTab-view" onclick="switchEditTab('gal','view')">👁 <span data-i18n="view">Görüntüle</span></button>
+          <button class="edit-tab" id="galTab-edit" onclick="switchEditTab('gal','edit')">✏️ <span data-i18n="edit">Düzenle</span></button>
         </div>
-        <label class="tbtn gold" style="cursor:pointer">
-          📷 Fotoğraf Ekle <input type="file" accept="image/*" multiple style="display:none" onchange="addGalleryImages(event)">
+        <label class="tbtn" style="cursor:pointer;background:var(--bg3);border:1px solid var(--border2)" title="Galeriden seç">
+          🖼 <span data-i18n="add_photo">Galeriden Ekle</span>
+          <input type="file" accept="image/*" multiple style="display:none" onchange="addGalleryImages(event)">
+        </label>
+        <label class="tbtn gold" style="cursor:pointer" title="Kamera ile çek">
+          📸 <span data-i18n="take_photo">Fotoğraf Çek</span>
+          <input type="file" accept="image/*" capture="environment" style="display:none" onchange="addGalleryImages(event)">
         </label>
       </div>
     </div>
     <div class="info-banner">
       <span class="ib-icon">🔄</span>
       <div class="ib-text">
-        <strong>Üye Portalı ile Anlık Senkronize</strong>
-        <p>Fotoğraf ekleme/silme işlemleri üye paneline anında yansır.</p>
+        <strong data-i18n="gallery_sync_title">Üye Portalı ile Anlık Senkronize</strong>
+        <p data-i18n="gallery_sync_desc">Fotoğraf ekleme/silme işlemleri üye paneline anında yansır.</p>
       </div>
     </div>
     <div id="galView"><div class="gallery-grid" id="galleryGrid"></div></div>
@@ -1125,36 +1194,143 @@ background-repeat:no-repeat;background-position:12px center;
   <div class="page" id="page-contact">
     <div class="sh" style="margin-bottom:16px">
       <h3>İletişim & Bilgiler</h3>
-      <div style="display:flex;background:var(--bg3);border-radius:10px;padding:4px;gap:4px">
-        <button class="edit-tab active" id="conTab-view" onclick="switchEditTab('con','view')">👁 Görüntüle</button>
-        <button class="edit-tab" id="conTab-edit" onclick="switchEditTab('con','edit')">✏️ Düzenle</button>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div style="display:flex;background:var(--bg3);border-radius:10px;padding:4px;gap:4px">
+          <button class="edit-tab active" id="conTab-view" onclick="switchEditTab('con','view')">👁 Görüntüle</button>
+          <button class="edit-tab" id="conTab-edit" onclick="switchEditTab('con','edit')">✏️ Düzenle</button>
+        </div>
       </div>
     </div>
+
+    <!-- GÖRÜNTÜLE MODU -->
     <div id="conView">
       <div class="info-banner" style="margin-bottom:16px">
         <span class="ib-icon">🔄</span>
-        <div class="ib-text"><strong>Üye Portalı ile Anlık Senkronize</strong><p>Burada kaydettiğiniz bilgiler üye panelinde anında güncellenir.</p></div>
+        <div class="ib-text"><strong>Üye Portalı ile Anlık Senkronize</strong><p>Düzenle'ye tıklayarak tüm bilgileri ekleyip kaldırabilirsiniz. Değişiklikler üye paneline anında yansır.</p></div>
       </div>
       <div id="contactDisplay"></div>
-      <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px" id="contactBtns"></div>
+      <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px" id="contactBtns"></div>
+      <div style="margin-top:16px;text-align:center">
+        <button class="tbtn gold" onclick="switchEditTab('con','edit')">✏️ Bilgileri Düzenle</button>
+      </div>
     </div>
+
+    <!-- DÜZENLE MODU -->
     <div id="conEdit" style="display:none">
-      <div class="card">
-        <div class="card-title">✏️ İletişim Bilgilerini Düzenle</div>
-        <div class="form-grid">
-          <div class="fg"><label>Stüdyo Adı</label><input type="text" id="ci-name"></div>
-          <div class="fg"><label>Telefon</label><input type="text" id="ci-phone" placeholder="+90 212 555 00 00"></div>
-          <div class="fg"><label>WhatsApp (rakamlar)</label><input type="text" id="ci-wa" placeholder="905xxxxxxxxx"></div>
-          <div class="fg"><label>Instagram</label><input type="text" id="ci-ig" placeholder="@diamond_studio"></div>
-          <div class="fg"><label>E-posta</label><input type="text" id="ci-email" placeholder="info@studio.com"></div>
-          <div class="fg"><label>Web Sitesi</label><input type="text" id="ci-web" placeholder="www.diamond-studio.com"></div>
-          <div class="fg full"><label>Adres</label><input type="text" id="ci-address" placeholder="Mahalle, İlçe, İl"></div>
-          <div class="fg full"><label>Çalışma Saatleri</label><input type="text" id="ci-hours" placeholder="Hafta içi 07:00–22:00 | Hafta sonu 09:00–18:00"></div>
+      <div class="cards-2">
+        <!-- Sol: Mevcut alanlar listesi -->
+        <div>
+          <div class="card" style="margin-bottom:14px">
+            <div class="card-title">🏢 Stüdyo Kimliği</div>
+            <div class="fg" style="margin-bottom:0">
+              <label>Stüdyo Adı</label>
+              <div style="display:flex;gap:8px">
+                <input type="text" id="ci-name" style="flex:1">
+                <button onclick="clearContactField('name')" class="tbtn btn-sm" style="color:var(--red)" title="Temizle">✕</button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📞 İletişim Bilgileri</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+
+              <div class="ci-row">
+                <span class="ci-icon">📞</span>
+                <div style="flex:1">
+                  <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:3px">Telefon</label>
+                  <input type="tel" id="ci-phone" placeholder="+90 212 555 00 00" style="width:100%">
+                </div>
+                <button onclick="clearContactField('phone')" class="tbtn btn-sm" style="color:var(--red);align-self:flex-end" title="Sil">✕</button>
+              </div>
+
+              <div class="ci-row">
+                <span class="ci-icon">💬</span>
+                <div style="flex:1">
+                  <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:3px">WhatsApp (sadece rakamlar)</label>
+                  <input type="tel" id="ci-wa" placeholder="905xxxxxxxxx" style="width:100%">
+                </div>
+                <button onclick="clearContactField('wa')" class="tbtn btn-sm" style="color:var(--red);align-self:flex-end" title="Sil">✕</button>
+              </div>
+
+              <div class="ci-row">
+                <span class="ci-icon">📸</span>
+                <div style="flex:1">
+                  <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:3px">Instagram</label>
+                  <input type="text" id="ci-ig" placeholder="@diamond_studio" style="width:100%">
+                </div>
+                <button onclick="clearContactField('ig')" class="tbtn btn-sm" style="color:var(--red);align-self:flex-end" title="Sil">✕</button>
+              </div>
+
+              <div class="ci-row">
+                <span class="ci-icon">✉️</span>
+                <div style="flex:1">
+                  <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:3px">E-posta</label>
+                  <input type="email" id="ci-email" placeholder="info@studio.com" style="width:100%">
+                </div>
+                <button onclick="clearContactField('email')" class="tbtn btn-sm" style="color:var(--red);align-self:flex-end" title="Sil">✕</button>
+              </div>
+
+              <div class="ci-row">
+                <span class="ci-icon">🌐</span>
+                <div style="flex:1">
+                  <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:3px">Web Sitesi</label>
+                  <input type="text" id="ci-web" placeholder="www.diamond-studio.com" style="width:100%">
+                </div>
+                <button onclick="clearContactField('web')" class="tbtn btn-sm" style="color:var(--red);align-self:flex-end" title="Sil">✕</button>
+              </div>
+
+            </div>
+          </div>
         </div>
-        <div style="display:flex;gap:10px;margin-top:8px">
-          <button class="btn-primary" style="flex:1" onclick="saveContact()">💾 Kaydet & Yayınla</button>
-          <button class="btn-secondary" onclick="switchEditTab('con','view')">İptal</button>
+
+        <!-- Sağ: Adres & Saatler + Ek bilgi -->
+        <div>
+          <div class="card" style="margin-bottom:14px">
+            <div class="card-title">📍 Konum & Saatler</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+
+              <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                  <span style="font-size:16px">📍</span>
+                  <label style="font-size:12px;color:var(--text2);flex:1">Adres</label>
+                  <button onclick="clearContactField('address')" class="tbtn btn-sm" style="color:var(--red);font-size:11px;padding:3px 8px">✕ Temizle</button>
+                </div>
+                <textarea id="ci-address" rows="2" placeholder="Mahalle, Sokak No, İlçe, İl" style="width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;resize:vertical"></textarea>
+              </div>
+
+              <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                  <span style="font-size:16px">🕐</span>
+                  <label style="font-size:12px;color:var(--text2);flex:1">Çalışma Saatleri</label>
+                  <button onclick="clearContactField('hours')" class="tbtn btn-sm" style="color:var(--red);font-size:11px;padding:3px 8px">✕ Temizle</button>
+                </div>
+                <textarea id="ci-hours" rows="2" placeholder="Hafta içi 07:00–22:00&#10;Hafta sonu 09:00–18:00" style="width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;resize:vertical"></textarea>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Ek Telefon Numaraları -->
+          <div class="card">
+            <div class="card-title">➕ Ek Telefon / İletişim Numaraları</div>
+            <div id="extraPhonesList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px"></div>
+            <div style="display:flex;gap:8px">
+              <select id="extraPhoneType" style="padding:9px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:12px;flex-shrink:0">
+                <option value="📞">📞 Telefon</option>
+                <option value="💬">💬 WhatsApp</option>
+                <option value="📠">📠 Faks</option>
+                <option value="🏢">🏢 İş Hattı</option>
+              </select>
+              <input type="tel" id="extraPhoneInput" placeholder="Numara girin..." style="flex:1;padding:9px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px" onkeydown="if(event.key==='Enter')addExtraPhone()">
+              <button onclick="addExtraPhone()" class="tbtn gold" style="padding:9px 14px;white-space:nowrap">+ Ekle</button>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn-primary" style="flex:1" onclick="saveContact()">💾 Kaydet & Üye Portalına Yayınla 🔄</button>
+        <button class="btn-secondary" onclick="switchEditTab('con','view')">İptal</button>
       </div>
     </div>
   </div>
@@ -1503,25 +1679,65 @@ background-repeat:no-repeat;background-position:12px center;
 <!-- Edit Package -->
 
 <div class="modal-overlay" id="editPackageModal">
-  <div class="modal">
-    <div class="modal-header"><h3>✏️ Paketi Düzenle</h3>
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <h3>✏️ Paketi Düzenle</h3>
       <button class="modal-close" onclick="closeModal('editPackageModal')">✕</button>
     </div>
     <div class="form-grid">
-      <div class="fg"><label>Paket Adı *</label><input id="epk-name" placeholder="Aylık Temel"></div>
-      <div class="fg"><label>Fiyat (₺) *</label><input id="epk-price" type="number"></div>
-      <div class="fg"><label>Süre</label><input id="epk-dur" placeholder="1 Ay"></div>
-      <div class="fg"><label>Seans Sayısı</label><input id="epk-sessions" type="number" placeholder="Sınırsız için boş bırakın"></div>
-      <div class="fg"><label>Öne Çıkar</label>
-        <select id="epk-featured"><option value="0">Normal</option><option value="1">⭐ Öne Çıkan</option></select>
+      <div class="fg full">
+        <label>Paket Adı *</label>
+        <input id="epk-name" placeholder="Aylık Temel" style="font-size:16px;font-weight:600">
       </div>
-      <div class="fg full"><label>Özellikler (her satır bir özellik)</label>
-        <textarea id="epk-features" rows="4" placeholder="Salon Erişimi&#10;Duş & Soyunma&#10;1 Misafir/ay"></textarea></div>
+      <div class="fg">
+        <label>Fiyat (₺) *</label>
+        <div class="input-wrap">
+          <input id="epk-price" type="number" min="0" step="50" style="font-size:20px;font-weight:700;color:var(--gold);padding-right:36px">
+          <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--gold);font-weight:700">₺</span>
+        </div>
+      </div>
+      <div class="fg">
+        <label>Süre</label>
+        <select id="epk-dur-sel" onchange="epkDurChange()">
+          <option value="1 Ay">1 Ay</option>
+          <option value="3 Ay">3 Ay</option>
+          <option value="6 Ay">6 Ay</option>
+          <option value="12 Ay">12 Ay (Yıllık)</option>
+          <option value="Esnek">Esnek</option>
+          <option value="diger">Diğer...</option>
+        </select>
+        <input id="epk-dur" placeholder="Örn: 2 Ay" style="display:none;margin-top:6px">
+      </div>
+      <div class="fg">
+        <label>Seans Sayısı</label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input id="epk-sessions" type="number" min="0" placeholder="Boş = Sınırsız" style="flex:1">
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;white-space:nowrap">
+            <input type="checkbox" id="epk-unlimited" onchange="epkUnlimitedChange()" style="width:14px;height:14px"> Sınırsız
+          </label>
+        </div>
+      </div>
+      <div class="fg">
+        <label>Öne Çıkar</label>
+        <select id="epk-featured">
+          <option value="0">Normal Paket</option>
+          <option value="1">⭐ Öne Çıkan Paket</option>
+        </select>
+      </div>
+      <div class="fg full">
+        <label>Özellikler <span style="color:var(--text3);font-size:11px;font-weight:400">(Her satır bir özellik — Enter ile ekle)</span></label>
+        <div id="epk-features-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px"></div>
+        <div style="display:flex;gap:8px">
+          <input id="epk-feat-new" placeholder="Yeni özellik ekle..." style="flex:1;padding:9px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:'Outfit',sans-serif" onkeydown="if(event.key==='Enter'){event.preventDefault();addEpkFeature();}">
+          <button onclick="addEpkFeature()" class="tbtn gold" style="padding:9px 14px">+ Ekle</button>
+        </div>
+      </div>
     </div>
     <input type="hidden" id="epk-id">
     <div class="modal-footer">
       <button class="btn-secondary" onclick="closeModal('editPackageModal')">İptal</button>
-      <button class="btn-primary" onclick="savePackageEdit()">Değişiklikleri Kaydet</button>
+      <button onclick="deletePackageFromModal()" style="padding:12px 18px;background:rgba(224,80,80,0.15);border:1px solid rgba(224,80,80,0.4);color:var(--red);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif">🗑 Sil</button>
+      <button class="btn-primary" onclick="savePackageEdit()">💾 Kaydet</button>
     </div>
   </div>
 </div>
@@ -1869,8 +2085,11 @@ function filterMembers(){
 function renderMemberTable(data){
   document.getElementById('memberCount').textContent=`(${data.length} üye)`;
   updateExpBadge();
+  updatePendingApptNotice();
   document.getElementById('memberTable').innerHTML=data.map(m=>{
     const pct=m.maxSessions?Math.round((m.sessions||0)/m.maxSessions*100):null;
+    const nextStatus=m.status==='active'?'expired':m.status==='expired'?'active':'active';
+    const nextLabel=nextStatus==='active'?'Aktif Yap':'Durdur';
     return `<tr>
       <td><div style="display:flex;align-items:center;gap:10px">
         <div class="av">${m.fname[0]}${m.lname[0]}</div>
@@ -1878,22 +2097,33 @@ function renderMemberTable(data){
       </div></td>
       <td>
         <div style="font-size:13px">${m.phone}</div>
-        <div style="display:flex;gap:6px;margin-top:4px">
+        <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap">
           ${m.wa?`<a href="https://wa.me/${m.wa}" target="_blank" style="font-size:11px;padding:2px 8px;background:rgba(37,211,102,0.15);color:#4ade80;border-radius:20px;border:1px solid rgba(37,211,102,0.3)">WhatsApp</a>`:''}
           ${m.phone?`<a href="tel:${m.phone}" style="font-size:11px;padding:2px 8px;background:rgba(74,143,224,0.15);color:var(--blue);border-radius:20px;border:1px solid rgba(74,143,224,0.3)">Ara</a>`:''}
-          ${m.email?`<a href="mailto:${m.email}" style="font-size:11px;padding:2px 8px;background:rgba(155,111,224,0.15);color:var(--purple);border-radius:20px;border:1px solid rgba(155,111,224,0.3)">E-posta</a>`:''}
+          ${m.email?`<a href="mailto:${m.email}" style="font-size:11px;padding:2px 8px;background:rgba(155,111,224,0.15);color:var(--purple);border-radius:20px;border:1px solid rgba(155,111,224,0.3)">Mail</a>`:''}
         </div>
       </td>
       <td><span class="badge blue">${m.pkg}</span></td>
       <td><span style="font-family:'JetBrains Mono';font-size:11px">${m.start||'—'}</span></td>
       <td><span style="font-family:'JetBrains Mono';font-size:11px">${m.end||'—'}</span></td>
-      <td>${m.maxSessions?`<div style="font-size:13px">${m.sessions||0}/${m.maxSessions}</div><div class="prog-wrap" style="width:80px"><div class="prog-fill" style="width:${pct}%"></div></div>`:'<span style="color:var(--text3);font-size:12px">∞ Sınırsız</span>'}</td>
-      <td><span class="badge ${m.status}">${statusLabel(m.status)}</span></td>
       <td>
-        <div style="display:flex;gap:6px">
+        ${m.maxSessions?`
+          <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px">
+            <button onclick="adjustSession(${m.id},-1)" class="tbtn btn-sm" style="padding:2px 7px;font-size:13px" title="Seans çıkar">−</button>
+            <span style="font-size:13px;min-width:36px;text-align:center">${m.sessions||0}/${m.maxSessions}</span>
+            <button onclick="adjustSession(${m.id},1)" class="tbtn btn-sm" style="padding:2px 7px;font-size:13px;color:var(--green)" title="Seans ekle">+</button>
+          </div>
+          <div class="prog-wrap" style="width:80px"><div class="prog-fill" style="width:${pct}%"></div></div>
+        `:'<span style="color:var(--text3);font-size:12px">∞ Sınırsız</span>'}
+      </td>
+      <td>
+        <span class="badge ${m.status}" style="cursor:pointer" onclick="toggleMemberStatus(${m.id})" title="${nextLabel}">${statusLabel(m.status)}</span>
+      </td>
+      <td>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
           <button onclick="checkinMember(${m.id})" class="tbtn btn-sm" title="Check-in">✓</button>
-          <button onclick="openEditMember(${m.id})" class="tbtn btn-sm" style="color:var(--gold);border-color:rgba(212,168,67,0.3)">✏️</button>
-          <button onclick="deleteMember(${m.id})" class="tbtn btn-sm" style="color:var(--red);border-color:rgba(224,80,80,0.3)">🗑</button>
+          <button onclick="openEditMember(${m.id})" class="tbtn btn-sm" style="color:var(--gold);border-color:rgba(212,168,67,0.3)" title="Düzenle">✏️</button>
+          <button onclick="deleteMember(${m.id})" class="tbtn btn-sm" style="color:var(--red);border-color:rgba(224,80,80,0.3)" title="Sil">🗑</button>
         </div>
       </td>
     </tr>`;
@@ -1905,6 +2135,60 @@ function updateExpBadge(){
   const n=DB.members.filter(m=>m.status==='expired'||m.status==='warn').length;
   document.getElementById('expBadge').textContent=n;
   document.getElementById('expBadge').style.display=n?'inline':'none';
+}
+
+/* ── Üye Durum Değiştir ── */
+function toggleMemberStatus(id){
+  const idx=DB.members.findIndex(x=>x.id===id); if(idx<0)return;
+  const cur=DB.members[idx].status;
+  DB.members[idx].status=cur==='active'?'expired':'active';
+  saveDB(); renderMemberTable(DB.members); renderDashboard();
+  showToast('🔄',`${DB.members[idx].fname} — durum: ${statusLabel(DB.members[idx].status)}`);
+}
+
+/* ── Seans +/- ── */
+function adjustSession(id, delta){
+  const idx=DB.members.findIndex(x=>x.id===id); if(idx<0)return;
+  const m=DB.members[idx]; if(!m.maxSessions) return;
+  const newVal=Math.max(0, Math.min(m.maxSessions, (m.sessions||0)+delta));
+  DB.members[idx].sessions=newVal;
+  if(newVal<=0) DB.members[idx].status='expired';
+  else if(DB.members[idx].status==='expired') DB.members[idx].status='active';
+  saveDB(); renderMemberTable(DB.members); populateSessionSelect();
+  showToast(delta>0?'➕':'➖',`${m.fname} — Kalan seans: ${newVal}/${m.maxSessions}`);
+}
+
+/* ── Bekleyen Randevu Bildirimi ── */
+function updatePendingApptNotice(){
+  const pending=DB.appointments.filter(a=>a.status==='pending');
+  const n=pending.length;
+  // Dashboard alert
+  const alert=document.getElementById('pendingApptAlert');
+  if(alert){ alert.style.display=n?'flex':'none'; if(n) document.getElementById('pendingApptText').textContent=`${n} bekleyen randevu onay bekliyor`; }
+  // Members page banner
+  const banner=document.getElementById('pendingApptBanner');
+  if(banner){ banner.style.display=n?'block':'none'; if(n) document.getElementById('pendingApptBannerText').textContent=`⏳ ${n} bekleyen randevu onay bekliyor`; }
+}
+
+/* ── Randevu Onayla / Reddet ── */
+function approveAppt(id){
+  const idx=DB.appointments.findIndex(x=>x.id===id); if(idx<0)return;
+  DB.appointments[idx].status='confirmed';
+  saveDB(); renderAppointments(); updatePendingApptNotice();
+  showToast('✅','Randevu onaylandı!');
+}
+function rejectAppt(id){
+  const a=DB.appointments.find(x=>x.id===id); if(!a)return;
+  const m=DB.members.find(x=>x.id===a.memberId);
+  showConfirm(
+    `❌ <b>${a.class}</b> randevusu reddedilsin mi?<br><span style="font-size:12px;color:var(--text3)">${m?m.fname+' '+m.lname:''} • ${a.date}</span>`,
+    ()=>{
+      const idx=DB.appointments.findIndex(x=>x.id===id);
+      if(idx>-1) DB.appointments[idx].status='cancelled';
+      saveDB(); renderAppointments(); updatePendingApptNotice();
+      showToast('❌','Randevu reddedildi.');
+    }
+  );
 }
 
 function populateSelects(){
@@ -2401,7 +2685,8 @@ function renderApptList(){
     const m=DB.members.find(x=>x.id===a.memberId);
     const sColor=a.status==='confirmed'?'active':a.status==='cancelled'?'expired':'warn';
     const sLabel=a.status==='confirmed'?'Onaylı':a.status==='cancelled'?'İptal':'Bekliyor';
-    return `<div class="appt-card">
+    const isPending=a.status==='pending';
+    return `<div class="appt-card${isPending?' pending-card':''}">
       <span class="appt-time">${a.time||'—'}</span>
       <div class="appt-info">
         <strong>${m?m.fname+' '+m.lname:'Üye'}</strong>
@@ -2409,6 +2694,10 @@ function renderApptList(){
       </div>
       <div class="appt-actions">
         <span class="badge ${sColor}">${sLabel}</span>
+        ${isPending?`
+          <button onclick="approveAppt(${a.id})" class="tbtn btn-sm" style="color:var(--green);border-color:rgba(60,184,122,0.4)" title="Onayla">✓</button>
+          <button onclick="rejectAppt(${a.id})" class="tbtn btn-sm" style="color:var(--red);border-color:rgba(224,80,80,0.3)" title="Reddet">✕</button>
+        `:''}
         <button onclick="openEditAppt(${a.id})" class="tbtn btn-sm" title="Düzenle">✏️</button>
         <button onclick="deleteAppt(${a.id})" class="tbtn btn-sm" style="color:var(--red)">🗑</button>
       </div>
@@ -2421,14 +2710,19 @@ function buildApptTable(appts){
     const m=DB.members.find(x=>x.id===a.memberId);
     const sColor=a.status==='confirmed'?'active':a.status==='cancelled'?'expired':'warn';
     const sLabel=a.status==='confirmed'?'Onaylı':a.status==='cancelled'?'İptal':'Bekliyor';
-    return `<tr>
+    const isPending=a.status==='pending';
+    return `<tr${isPending?' style="background:rgba(212,168,67,0.05)"':''}>
       <td>${m?m.fname+' '+m.lname:'—'}</td>
       <td>${a.class}</td>
       <td style="font-family:'JetBrains Mono';font-size:12px">${a.date}</td>
       <td style="font-family:'JetBrains Mono';font-size:12px">${a.time||'—'}</td>
       <td><span class="badge ${sColor}">${sLabel}</span></td>
       <td style="font-size:12px;color:var(--text2)">${a.note||'—'}</td>
-      <td style="display:flex;gap:6px">
+      <td style="display:flex;gap:5px;flex-wrap:wrap">
+        ${isPending?`
+          <button onclick="approveAppt(${a.id})" class="tbtn btn-sm" style="color:var(--green);border-color:rgba(60,184,122,0.4)" title="Onayla">✓ Onayla</button>
+          <button onclick="rejectAppt(${a.id})" class="tbtn btn-sm" style="color:var(--red)" title="Reddet">✕ Reddet</button>
+        `:`<button onclick="changeApptStatus(${a.id})" class="tbtn btn-sm" style="color:var(--text2);font-size:11px" title="Durum değiştir">🔄</button>`}
         <button onclick="openEditAppt(${a.id})" class="tbtn btn-sm" title="Düzenle">✏️</button>
         <button onclick="deleteAppt(${a.id})" class="tbtn btn-sm" style="color:var(--red)">🗑</button>
       </td>
@@ -2531,16 +2825,25 @@ function deleteAppt(id){
 
 /* ═══════════ PACKAGES ═══════════ */
 function renderPackages(){
-  // View cards
+  // View cards — with hover action overlay
   const el=document.getElementById('packagesGrid');
   if(el) el.innerHTML=DB.packages.map(p=>`
     <div class="pkg-card${p.featured?' featured':''}">
       ${p.featured?'<div class="pkg-tag">⭐ EN POPÜLER</div>':''}
       <div class="pkg-name">${p.name}</div>
       <div class="pkg-price">${p.price.toLocaleString('tr-TR')}<small> ₺ / ${p.duration}</small></div>
-      ${p.sessions?`<div style="font-size:12px;color:var(--text2);margin-top:4px">${p.sessions} seans hakkı</div>`:''}
+      ${p.sessions?`<div style="font-size:12px;color:var(--text2);margin-top:4px">${p.sessions} ${t('sessions_left')}</div>`:''}
       <div class="pkg-features">${p.features.map(f=>`<div class="pkg-feat">${f}</div>`).join('')}</div>
-    </div>`).join('');
+      <div class="pkg-actions">
+        <button class="pa-edit" onclick="event.stopPropagation();openEditPackage(${p.id})">✏️ ${t('edit')}</button>
+        <button class="pa-star" onclick="event.stopPropagation();toggleFeatured(${p.id})">⭐ ${t('feature')}</button>
+        <button class="pa-del" onclick="event.stopPropagation();deletePackage(${p.id})">🗑 ${t('delete')}</button>
+      </div>
+    </div>`).join('')+`
+    <div class="pkg-card" style="border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:200px;opacity:.6" onclick="openModal('addPackageModal')">
+      <span style="font-size:36px">+</span>
+      <span style="font-size:14px;font-weight:600">${t('add_package')}</span>
+    </div>`;
   // Edit table
   const el2=document.getElementById('pkgEditList');
   if(el2) el2.innerHTML=DB.packages.map(p=>`
@@ -2556,34 +2859,113 @@ function renderPackages(){
         <button onclick="deletePackage(${p.id})" class="tbtn btn-sm" style="color:var(--red)">🗑</button>
       </td>
     </tr>`).join('');
-  // Sync member portal packages tab
   syncMemberPackages();
 }
+/* ── EPK (Edit Package) yardımcıları ── */
+let _epkFeatures=[];
+
+function epkDurChange(){
+  const sel=document.getElementById('epk-dur-sel');
+  const inp=document.getElementById('epk-dur');
+  if(!sel||!inp)return;
+  if(sel.value==='diger'){inp.style.display='block';inp.value='';inp.focus();}
+  else{inp.style.display='none';inp.value=sel.value;}
+}
+function epkUnlimitedChange(){
+  const cb=document.getElementById('epk-unlimited');
+  const inp=document.getElementById('epk-sessions');
+  if(!cb||!inp)return;
+  inp.disabled=cb.checked;
+  if(cb.checked)inp.value='';
+}
+function renderEpkFeatures(){
+  const list=document.getElementById('epk-features-list');
+  if(!list)return;
+  list.innerHTML=_epkFeatures.length
+    ?_epkFeatures.map((f,i)=>`
+      <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg3);border-radius:8px;border:1px solid var(--border3)">
+        <span style="font-size:13px;color:var(--green);flex-shrink:0">✓</span>
+        <span style="flex:1;font-size:13px">${f}</span>
+        <button onclick="_epkFeatures.splice(${i},1);renderEpkFeatures()" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:16px;padding:0 4px;line-height:1">✕</button>
+      </div>`).join('')
+    :'<p style="font-size:12px;color:var(--text3);padding:4px 0">Özellik yok — aşağıdan ekleyin</p>';
+}
+function addEpkFeature(){
+  const inp=document.getElementById('epk-feat-new');
+  if(!inp)return;
+  const val=inp.value.trim();
+  if(!val)return;
+  _epkFeatures.push(val);
+  inp.value='';
+  renderEpkFeatures();
+}
+
 function openEditPackage(id){
   const p=DB.packages.find(x=>x.id===id);if(!p)return;
+  _epkFeatures=[...(p.features||[])];
+
   document.getElementById('epk-id').value=id;
   document.getElementById('epk-name').value=p.name;
   document.getElementById('epk-price').value=p.price;
-  document.getElementById('epk-dur').value=p.duration;
-  document.getElementById('epk-sessions').value=p.sessions||'';
   document.getElementById('epk-featured').value=p.featured?'1':'0';
-  document.getElementById('epk-features').value=p.features.join('\n');
+
+  // Seans
+  const sessEl=document.getElementById('epk-sessions');
+  const unlEl=document.getElementById('epk-unlimited');
+  if(p.sessions){
+    if(sessEl)sessEl.value=p.sessions;
+    if(unlEl){unlEl.checked=false; if(sessEl)sessEl.disabled=false;}
+  } else {
+    if(sessEl){sessEl.value='';sessEl.disabled=true;}
+    if(unlEl)unlEl.checked=true;
+  }
+
+  // Süre — select + hidden input
+  const durSel=document.getElementById('epk-dur-sel');
+  const durInp=document.getElementById('epk-dur');
+  const durOptions=['1 Ay','3 Ay','6 Ay','12 Ay (Yıllık)','Esnek'];
+  if(durSel){
+    if(durOptions.includes(p.duration)){
+      durSel.value=p.duration;
+      if(durInp){durInp.style.display='none';durInp.value=p.duration;}
+    } else {
+      durSel.value='diger';
+      if(durInp){durInp.style.display='block';durInp.value=p.duration;}
+    }
+  } else if(durInp){
+    durInp.value=p.duration;
+  }
+
+  renderEpkFeatures();
   openModal('editPackageModal');
 }
+
 function savePackageEdit(){
   const id=parseInt(document.getElementById('epk-id').value);
   const idx=DB.packages.findIndex(x=>x.id===id);if(idx<0)return;
+
   const name=document.getElementById('epk-name').value.trim();
   const price=parseInt(document.getElementById('epk-price').value);
   if(!name||!price){showToast('❌','Ad ve fiyat zorunludur');return;}
-  const features=document.getElementById('epk-features').value.split('\n').filter(f=>f.trim());
+
   const featured=document.getElementById('epk-featured').value==='1';
-  // If this one is featured, unfeature others
+
+  // Süre
+  const durSel=document.getElementById('epk-dur-sel');
+  const durInp=document.getElementById('epk-dur');
+  let duration='1 Ay';
+  if(durSel&&durSel.value==='diger') duration=durInp?durInp.value:'1 Ay';
+  else if(durSel) duration=durSel.value;
+  else if(durInp) duration=durInp.value;
+
+  // Seans
+  const unlEl=document.getElementById('epk-unlimited');
+  const sessEl=document.getElementById('epk-sessions');
+  const sessions=(unlEl&&unlEl.checked)?null:(parseInt(sessEl&&sessEl.value)||null);
+
   if(featured) DB.packages.forEach(p=>p.featured=false);
-  DB.packages[idx]={...DB.packages[idx],name,price,
-    duration:document.getElementById('epk-dur').value||'1 Ay',
-    sessions:parseInt(document.getElementById('epk-sessions').value)||null,
-    features,featured};
+  DB.packages[idx]={...DB.packages[idx],name,price,duration,sessions,features:[..._epkFeatures],featured};
+
   saveDB();closeModal('editPackageModal');renderPackages();populateSelects();
   showToast('✅',`${name} paketi güncellendi!`);
 }
@@ -2603,6 +2985,22 @@ function addPackage(){
     sessions:parseInt(document.getElementById('pk-sessions').value)||null,features,featured:false});
   saveDB();closeModal('addPackageModal');renderPackages();populateSelects();
   showToast('✅',`${name} paketi eklendi! Üye portalına yansıdı.`);
+}
+function deletePackageFromModal(){
+  const id=parseInt(document.getElementById('epk-id').value);
+  const p=DB.packages.find(x=>x.id===id);if(!p)return;
+  // Önce modal'ı kapat, sonra onay sor
+  closeModal('editPackageModal');
+  setTimeout(()=>{
+    showConfirm(
+      `🗑 <b>${p.name}</b> paketi silinsin mi?<br><span style="font-size:12px;color:var(--text3)">Bu pakete kayıtlı üyeler etkilenmez.</span>`,
+      ()=>{
+        DB.packages=DB.packages.filter(x=>x.id!==id);
+        saveDB();renderPackages();populateSelects();
+        showToast('🗑','Paket silindi.');
+      }
+    );
+  },150);
 }
 function deletePackage(id){
   const p=DB.packages.find(x=>x.id===id);if(!p)return;
@@ -2735,45 +3133,94 @@ function closeLightbox(){document.getElementById('lightbox').classList.remove('o
 /* ═══════════ CONTACT ═══════════ */
 function renderContactPage(){
   const c=DB.contact;
-  // Fill edit fields if they exist
+  // Fill edit fields
   ['name','phone','wa','ig','email','web','address','hours'].forEach(k=>{
     const el=document.getElementById('ci-'+k);if(el)el.value=c[k]||'';
   });
+  renderExtraPhonesList();
   renderContactDisplay();
   document.getElementById('studioNameSb').textContent=c.name||'Diamond Fitness Studio';
 }
+
+function clearContactField(key){
+  DB.contact[key]='';
+  const el=document.getElementById('ci-'+key);if(el)el.value='';
+  showToast('🗑', key+' alanı temizlendi');
+}
+
+function renderExtraPhonesList(){
+  if(!DB.contact.extraPhones) DB.contact.extraPhones=[];
+  const list=document.getElementById('extraPhonesList');
+  if(!list)return;
+  list.innerHTML=DB.contact.extraPhones.map((p,i)=>`
+    <div class="extra-phone-row">
+      <span class="ep-type">${p.type}</span>
+      <span class="ep-num">${p.number}</span>
+      <button onclick="removeExtraPhone(${i})" class="tbtn btn-sm" style="color:var(--red);padding:3px 8px;flex-shrink:0">✕</button>
+    </div>`).join('')||'<p style="font-size:12px;color:var(--text3)">Henüz ek numara yok</p>';
+}
+
+function addExtraPhone(){
+  const type=document.getElementById('extraPhoneType').value;
+  const number=document.getElementById('extraPhoneInput').value.trim();
+  if(!number){showToast('❌','Numara giriniz');return;}
+  if(!DB.contact.extraPhones) DB.contact.extraPhones=[];
+  DB.contact.extraPhones.push({type,number});
+  document.getElementById('extraPhoneInput').value='';
+  renderExtraPhonesList();
+  showToast('✅','Numara eklendi');
+}
+
+function removeExtraPhone(idx){
+  if(!DB.contact.extraPhones)return;
+  DB.contact.extraPhones.splice(idx,1);
+  renderExtraPhonesList();
+  showToast('🗑','Numara kaldırıldı');
+}
+
 function renderContactDisplay(){
   const c=DB.contact;
+  const extraPhones=(c.extraPhones||[]).map(p=>
+    `<div class="contact-item"><div class="contact-ico phone">${p.type}</div><div><div style="font-size:12px;color:var(--text2)">Ek İletişim</div><a class="contact-link" href="tel:${p.number}">${p.number}</a></div></div>`
+  ).join('');
+
   const items=[
+    c.name&&`<div class="contact-item"><div class="contact-ico web">🏢</div><div><div style="font-size:12px;color:var(--text2)">Stüdyo</div><div style="font-size:13.5px;font-weight:600">${c.name}</div></div></div>`,
     c.phone&&`<div class="contact-item"><div class="contact-ico phone">📞</div><div><div style="font-size:12px;color:var(--text2)">Telefon</div><a class="contact-link" href="tel:${c.phone}">${c.phone}</a></div></div>`,
     c.wa&&`<div class="contact-item"><div class="contact-ico wa">💬</div><div><div style="font-size:12px;color:var(--text2)">WhatsApp</div><a class="contact-link" href="https://wa.me/${c.wa}" target="_blank">+${c.wa}</a></div></div>`,
     c.ig&&`<div class="contact-item"><div class="contact-ico ig">📸</div><div><div style="font-size:12px;color:var(--text2)">Instagram</div><a class="contact-link" href="https://instagram.com/${c.ig.replace('@','')}" target="_blank">${c.ig}</a></div></div>`,
     c.email&&`<div class="contact-item"><div class="contact-ico mail">✉️</div><div><div style="font-size:12px;color:var(--text2)">E-posta</div><a class="contact-link" href="mailto:${c.email}">${c.email}</a></div></div>`,
     c.web&&`<div class="contact-item"><div class="contact-ico web">🌐</div><div><div style="font-size:12px;color:var(--text2)">Web Sitesi</div><a class="contact-link" href="https://${c.web}" target="_blank">${c.web}</a></div></div>`,
     c.address&&`<div class="contact-item"><div class="contact-ico phone">📍</div><div><div style="font-size:12px;color:var(--text2)">Adres</div><div style="font-size:13.5px">${c.address}</div></div></div>`,
-    c.hours&&`<div class="contact-item"><div class="contact-ico web">🕐</div><div><div style="font-size:12px;color:var(--text2)">Çalışma Saatleri</div><div style="font-size:13.5px">${c.hours}</div></div></div>`,
+    c.hours&&`<div class="contact-item"><div class="contact-ico web">🕐</div><div><div style="font-size:12px;color:var(--text2)">Çalışma Saatleri</div><div style="font-size:13.5px;white-space:pre-line">${c.hours}</div></div></div>`,
+    extraPhones
   ].filter(Boolean).join('');
+
   const btns=[
     c.phone&&`<a href="tel:${c.phone}" class="btn-primary" style="display:flex;align-items:center;gap:10px;justify-content:center;text-decoration:none;padding:13px">📞 Hemen Ara</a>`,
     c.wa&&`<a href="https://wa.me/${c.wa}?text=Merhaba, stüdyo hakkında bilgi almak istiyorum." target="_blank" style="display:flex;align-items:center;gap:10px;justify-content:center;padding:13px;background:rgba(37,211,102,0.15);border:1px solid rgba(37,211,102,0.3);color:#4ade80;border-radius:10px;text-decoration:none;font-weight:600">💬 WhatsApp ile Yaz</a>`,
     c.ig&&`<a href="https://instagram.com/${c.ig.replace('@','')}" target="_blank" style="display:flex;align-items:center;gap:10px;justify-content:center;padding:13px;background:rgba(224,80,80,0.15);border:1px solid rgba(224,80,80,0.3);color:var(--red);border-radius:10px;text-decoration:none;font-weight:600">📸 Instagram'da Takip Et</a>`,
   ].filter(Boolean).join('');
+
   const cd=document.getElementById('contactDisplay');if(cd)cd.innerHTML=items;
   const cb=document.getElementById('contactBtns');if(cb)cb.innerHTML=btns;
-  // ── ANLIK SENKRONIZASYON: member portal contact ──
+  // ── ANLIK SENKRONIZASYON: member portal ──
   const mpContact=document.getElementById('mpContactInfo');
   if(mpContact)mpContact.innerHTML=items+btns;
 }
+
 function saveContact(){
   DB.contact={
-    name:document.getElementById('ci-name').value,
-    phone:document.getElementById('ci-phone').value,
-    wa:document.getElementById('ci-wa').value,
-    ig:document.getElementById('ci-ig').value,
-    email:document.getElementById('ci-email').value,
-    web:document.getElementById('ci-web').value,
-    address:document.getElementById('ci-address').value,
-    hours:document.getElementById('ci-hours').value,
+    ...DB.contact,
+    name:document.getElementById('ci-name').value.trim(),
+    phone:document.getElementById('ci-phone').value.trim(),
+    wa:document.getElementById('ci-wa').value.trim(),
+    ig:document.getElementById('ci-ig').value.trim(),
+    email:document.getElementById('ci-email').value.trim(),
+    web:document.getElementById('ci-web').value.trim(),
+    address:document.getElementById('ci-address').value.trim(),
+    hours:document.getElementById('ci-hours').value.trim(),
+    extraPhones:DB.contact.extraPhones||[],
   };
   saveDB();renderContactDisplay();renderContactPage();
   switchEditTab('con','view');
@@ -2970,6 +3417,61 @@ function showToast(emoji,msg){
   t.classList.add('show');
   clearTimeout(toastTimeout);
   toastTimeout=setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+function changeApptStatus(id){
+  const statuses=['confirmed','pending','cancelled'];
+  const idx=DB.appointments.findIndex(x=>x.id===id); if(idx<0)return;
+  const cur=DB.appointments[idx].status||'confirmed';
+  const next=statuses[(statuses.indexOf(cur)+1)%statuses.length];
+  DB.appointments[idx].status=next;
+  const labels={confirmed:'Onaylı',pending:'Bekliyor',cancelled:'İptal'};
+  saveDB(); renderAppointments(); updatePendingApptNotice();
+  showToast('🔄',`Randevu: ${labels[next]}`);
+}
+
+/* ═══════════ i18n LANGUAGE SYSTEM ═══════════ */
+const LANGS={
+  tr:{
+    dashboard:'Kontrol Paneli', members:'Üyeler', checkin:'Check-in', schedule:'Ders Programı',
+    appointments:'Randevular', packages:'Paketler', finance:'Finans', gallery:'Galeri',
+    contact:'İletişim', settings:'Ayarlar',
+    add_member:'+ Üye Ekle', add_photo:'Galeriden Ekle', take_photo:'Fotoğraf Çek',
+    view:'Görüntüle', edit:'Düzenle', delete:'Sil', feature:'Öne Çıkar', add_package:'Paket Ekle',
+    sessions_left:'seans hakkı',
+    gallery_sync_title:'Üye Portalı ile Anlık Senkronize',
+    gallery_sync_desc:'Fotoğraf ekleme/silme işlemleri üye paneline anında yansır.',
+    save:'Kaydet', cancel:'İptal', logout:'↩ Çıkış Yap',
+    total_members:'Toplam Üye', active_members:'Aktif Üye', monthly_income:'Aylık Gelir', todays_checkins:"Bugünkü Giriş",
+  },
+  en:{
+    dashboard:'Dashboard', members:'Members', checkin:'Check-in', schedule:'Schedule',
+    appointments:'Appointments', packages:'Packages', finance:'Finance', gallery:'Gallery',
+    contact:'Contact', settings:'Settings',
+    add_member:'+ Add Member', add_photo:'Add from Gallery', take_photo:'Take Photo',
+    view:'View', edit:'Edit', delete:'Delete', feature:'Feature', add_package:'Add Package',
+    sessions_left:'sessions left',
+    gallery_sync_title:'Synced with Member Portal',
+    gallery_sync_desc:'Photos added or removed appear instantly in the member portal.',
+    save:'Save', cancel:'Cancel', logout:'↩ Log Out',
+    total_members:'Total Members', active_members:'Active Members', monthly_income:'Monthly Income', todays_checkins:"Today's Check-ins",
+  }
+};
+let currentLang=localStorage.getItem('dp_lang')||'tr';
+function t(key){ return LANGS[currentLang][key]||LANGS['tr'][key]||key; }
+function setLang(lang){
+  currentLang=lang;
+  localStorage.setItem('dp_lang',lang);
+  document.getElementById('langTR').classList.toggle('active',lang==='tr');
+  document.getElementById('langEN').classList.toggle('active',lang==='en');
+  // Update all data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.getAttribute('data-i18n');
+    el.textContent=t(key);
+  });
+  // Re-render dynamic content
+  renderDashboard();renderPackages();renderGallery();
+  showToast('🌐', lang==='tr'?'Türkçe seçildi':'English selected');
 }
 
 /* ═══════════ START ═══════════ */
