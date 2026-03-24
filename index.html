@@ -1900,6 +1900,43 @@ function toggleRemember(){
 
 function checkAutoLogin(){
   loadDB();createParticles('loginParticles',25);
+
+  // ── URL üzerinden davet linki kontrolü ──
+  const params=new URLSearchParams(window.location.search);
+  const urlPhone=params.get('uye');
+  const urlData=params.get('d');
+
+  if(urlPhone&&urlData){
+    try{
+      // Gelen verilerle DB'yi güncelle (birleştir)
+      const imported=JSON.parse(atob(urlData));
+      // Üye var mı kontrol et
+      const memberInImport=imported.members&&imported.members.find(x=>x.phone.replace(/\s/g,'')===urlPhone.replace(/\s/g,''));
+      if(memberInImport){
+        // DB'yi import et (local DB ile birleştir — import öncelikli)
+        DB={...DB,...imported};
+        saveDB();
+        // Temiz URL'ye geç
+        window.history.replaceState({},'',window.location.pathname);
+        loggedInMember=memberInImport;
+        enterMember(memberInImport);
+        return;
+      }
+    }catch(e){ console.warn('URL login failed:',e); }
+  }
+
+  // Sadece telefon parametresi varsa
+  if(urlPhone&&!urlData){
+    const m=DB.members.find(x=>x.phone.replace(/\s/g,'')===urlPhone.replace(/\s/g,''));
+    if(m){
+      window.history.replaceState({},'',window.location.pathname);
+      loggedInMember=m;
+      enterMember(m);
+      return;
+    }
+  }
+
+  // Normal auto-login
   const rem=DB.remember;
   if(rem.role==='admin'&&rem.ts&&Date.now()-rem.ts<7*86400000){
     enterAdmin();return;
@@ -2123,6 +2160,7 @@ function renderMemberTable(data){
         <div style="display:flex;gap:5px;flex-wrap:wrap">
           <button onclick="checkinMember(${m.id})" class="tbtn btn-sm" title="Check-in">✓</button>
           <button onclick="openEditMember(${m.id})" class="tbtn btn-sm" style="color:var(--gold);border-color:rgba(212,168,67,0.3)" title="Düzenle">✏️</button>
+          <button onclick="shareMemberLink(${m.id})" class="tbtn btn-sm" style="color:var(--green);border-color:rgba(60,184,122,0.3)" title="Giriş Linki Paylaş">📤</button>
           <button onclick="deleteMember(${m.id})" class="tbtn btn-sm" style="color:var(--red);border-color:rgba(224,80,80,0.3)" title="Sil">🗑</button>
         </div>
       </td>
@@ -2294,7 +2332,68 @@ function deleteMember(id){
   );
 }
 
-/* ═══════════ CHECK-IN ═══════════ */
+/* ── Üye Giriş Linki Paylaş ── */
+function shareMemberLink(id){
+  const m=DB.members.find(x=>x.id===id);if(!m)return;
+
+  // Tüm DB'yi base64'e çevir (üye başka cihazda açınca DB import edilir)
+  let dbData='';
+  try{ dbData=btoa(unescape(encodeURIComponent(JSON.stringify(DB)))); }catch(e){}
+
+  const baseUrl=window.location.href.split('?')[0];
+  const phone=m.phone.replace(/\s/g,'');
+  const link=dbData
+    ? `${baseUrl}?uye=${encodeURIComponent(phone)}&d=${dbData}`
+    : `${baseUrl}?uye=${encodeURIComponent(phone)}`;
+
+  // WhatsApp mesajı
+  const waMsg=`Merhaba ${m.fname}! 💎 DiamondPro üye panelinize giriş yapmak için bu linke tıklayın:\n\n${link}\n\nLink sizi otomatik olarak üye panelinize yönlendirecek.`;
+
+  // Önce link'i kopyala, sonra WhatsApp aç
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(link).catch(()=>{});
+  }
+
+  // Paylaşım modalı göster
+  showShareModal(m, link, waMsg);
+}
+
+function showShareModal(m, link, waMsg){
+  // Geçici modal oluştur
+  const existing=document.getElementById('shareLinkModal');
+  if(existing)existing.remove();
+
+  const modal=document.createElement('div');
+  modal.id='shareLinkModal';
+  modal.className='modal-overlay open';
+  modal.innerHTML=`
+    <div class="modal" style="max-width:460px">
+      <div class="modal-header">
+        <h3>📤 Giriş Linki — ${m.fname} ${m.lname}</h3>
+        <button class="modal-close" onclick="document.getElementById('shareLinkModal').remove()">✕</button>
+      </div>
+      <div style="margin-bottom:16px">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:10px">Bu link ${m.fname}'in tüm verilerini içeriyor. Farklı cihazdan açtığında otomatik giriş yapacak.</p>
+        <div style="padding:10px 12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);font-size:11px;font-family:'JetBrains Mono';word-break:break-all;color:var(--text2);max-height:80px;overflow:hidden">${link.substring(0,120)}...</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <a href="https://wa.me/${m.wa||m.phone.replace(/[^0-9]/g,'')}?text=${encodeURIComponent(waMsg)}"
+          target="_blank"
+          style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;background:rgba(37,211,102,0.15);border:1px solid rgba(37,211,102,0.3);color:#4ade80;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px">
+          💬 WhatsApp ile Gönder
+        </a>
+        <button onclick="navigator.clipboard.writeText('${link.replace(/'/g,"\\'")}').then(()=>showToast('✅','Link kopyalandı!'))"
+          style="padding:13px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:10px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;font-size:14px">
+          📋 Linki Kopyala
+        </button>
+        <div style="text-align:center;font-size:11px;color:var(--text3)">
+          ⚠️ Bu link üye verilerini içerir. Sadece ilgili üye ile paylaşın.
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
+}
 function renderCheckinPage(){
   renderTodayList();populateSessionSelect();
 }
