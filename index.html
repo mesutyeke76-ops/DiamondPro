@@ -1906,34 +1906,67 @@ function checkAutoLogin(){
   const urlPhone=params.get('uye');
   const urlData=params.get('d');
 
-  if(urlPhone&&urlData){
-    try{
-      // Gelen verilerle DB'yi güncelle (birleştir)
-      const imported=JSON.parse(atob(urlData));
-      // Üye var mı kontrol et
-      const memberInImport=imported.members&&imported.members.find(x=>x.phone.replace(/\s/g,'')===urlPhone.replace(/\s/g,''));
-      if(memberInImport){
-        // DB'yi import et (local DB ile birleştir — import öncelikli)
-        DB={...DB,...imported};
-        saveDB();
-        // Temiz URL'ye geç
-        window.history.replaceState({},'',window.location.pathname);
-        loggedInMember=memberInImport;
-        enterMember(memberInImport);
-        return;
-      }
-    }catch(e){ console.warn('URL login failed:',e); }
-  }
+  if(urlPhone){
+    const cleanPhone=decodeURIComponent(urlPhone).replace(/\s/g,'');
 
-  // Sadece telefon parametresi varsa
-  if(urlPhone&&!urlData){
-    const m=DB.members.find(x=>x.phone.replace(/\s/g,'')===urlPhone.replace(/\s/g,''));
+    if(urlData){
+      try{
+        // UTF-8 güvenli decode
+        const json=decodeURIComponent(Array.from(atob(urlData),
+          c=>('%'+('00'+c.charCodeAt(0).toString(16)).slice(-2))).join(''));
+        const payload=JSON.parse(json);
+
+        if(payload._singleMember){
+          // Tek üye payload'ı — sadece bu üyeyi mevcut DB'ye ekle/güncelle
+          const incomingMember=payload.member;
+          if(incomingMember&&incomingMember.phone.replace(/\s/g,'')===cleanPhone){
+            // Üyeyi DB'ye ekle veya güncelle
+            const existingIdx=DB.members.findIndex(x=>x.id===incomingMember.id||x.phone.replace(/\s/g,'')===cleanPhone);
+            if(existingIdx>=0) DB.members[existingIdx]=incomingMember;
+            else DB.members.push(incomingMember);
+            // Paketler ve dersleri de al (bunlar küçük)
+            if(payload.packages&&payload.packages.length) DB.packages=payload.packages;
+            if(payload.classes&&payload.classes.length) DB.classes=payload.classes;
+            if(payload.contact) DB.contact=payload.contact;
+            if(payload.adminPassword) DB.adminPassword=payload.adminPassword;
+            saveDB();
+            window.history.replaceState({},'',window.location.pathname);
+            loggedInMember=incomingMember;
+            enterMember(incomingMember);
+            return;
+          }
+        } else {
+          // Eski format — tam DB
+          const memberInImport=payload.members&&payload.members.find(x=>x.phone.replace(/\s/g,'')===cleanPhone);
+          if(memberInImport){
+            DB={...DB,...payload};
+            saveDB();
+            window.history.replaceState({},'',window.location.pathname);
+            loggedInMember=memberInImport;
+            enterMember(memberInImport);
+            return;
+          }
+        }
+      }catch(e){ console.warn('URL login parse error:',e); }
+    }
+
+    // d parametresi yoksa veya hata olduysa — mevcut DB'den ara
+    const m=DB.members.find(x=>x.phone.replace(/\s/g,'')===cleanPhone);
     if(m){
       window.history.replaceState({},'',window.location.pathname);
       loggedInMember=m;
       enterMember(m);
       return;
     }
+
+    // Üye bulunamadı — login ekranını aç, telefonu önceden doldur
+    document.getElementById('loginScreen').classList.add('show');
+    const memberTab=document.getElementById('tab-member');
+    if(memberTab) memberTab.click();
+    const memberUserEl=document.getElementById('memberUser');
+    if(memberUserEl) memberUserEl.value=decodeURIComponent(urlPhone);
+    window.history.replaceState({},'',window.location.pathname);
+    return;
   }
 
   // Normal auto-login
@@ -2336,25 +2369,36 @@ function deleteMember(id){
 function shareMemberLink(id){
   const m=DB.members.find(x=>x.id===id);if(!m)return;
 
-  // Tüm DB'yi base64'e çevir (üye başka cihazda açınca DB import edilir)
-  let dbData='';
-  try{ dbData=btoa(unescape(encodeURIComponent(JSON.stringify(DB)))); }catch(e){}
+  // Sadece bu üyenin datasını + gerekli stüdyo bilgilerini encode et
+  // (Tüm DB yerine — tüm DB çok büyük, WhatsApp linki kesiyor)
+  const payload={
+    member: m,
+    packages: DB.packages,
+    classes: DB.classes,
+    contact: DB.contact,
+    gallery: [],           // galeri çok büyük, atla
+    studioName: DB.studioName||DB.contact.name||'Diamond Fitness Studio',
+    adminPassword: DB.adminPassword,
+    _singleMember: true    // import sırasında sadece üye ekleneceğini belirt
+  };
 
-  const baseUrl=window.location.href.split('?')[0];
+  let encoded='';
+  try{
+    const json=JSON.stringify(payload);
+    // UTF-8 güvenli base64
+    encoded=btoa(encodeURIComponent(json).replace(/%([0-9A-F]{2})/g,
+      (_,p1)=>String.fromCharCode(parseInt(p1,16))));
+  }catch(e){ console.warn('encode error',e); }
+
+  const baseUrl=window.location.href.split('?')[0].split('#')[0];
   const phone=m.phone.replace(/\s/g,'');
-  const link=dbData
-    ? `${baseUrl}?uye=${encodeURIComponent(phone)}&d=${dbData}`
+
+  const link=encoded
+    ? `${baseUrl}?uye=${encodeURIComponent(phone)}&d=${encoded}`
     : `${baseUrl}?uye=${encodeURIComponent(phone)}`;
 
-  // WhatsApp mesajı
-  const waMsg=`Merhaba ${m.fname}! 💎 DiamondPro üye panelinize giriş yapmak için bu linke tıklayın:\n\n${link}\n\nLink sizi otomatik olarak üye panelinize yönlendirecek.`;
+  const waMsg=`Merhaba ${m.fname}! 💎 DiamondPro üye panelinize erişmek için bu linke tıklayın:\n\n${link}\n\nBu link sadece size özeldir. Telefon numaranız: ${m.phone}`;
 
-  // Önce link'i kopyala, sonra WhatsApp aç
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(link).catch(()=>{});
-  }
-
-  // Paylaşım modalı göster
   showShareModal(m, link, waMsg);
 }
 
